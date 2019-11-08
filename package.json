@@ -14,7 +14,7 @@
     "bluebird": "^3.5.3",
     "body-parser": "^1.18.3",
     "chalk": "^2.4.1",
-    "cheerio": "^1.0.0-rc.2",
+    "cheerio": "^1.0.0-rc.3",
     "ejs": "^2.6.1",
     "express": "^4.16.4",
     "express-session": "^1.15.6",
@@ -29,7 +29,7 @@
     "uuid": "^3.3.2"
   },
   "devDependencies": {
-    "eslint": "^6.1.0",
+    "eslint": "^6.6.0",
     "morgan": "^1.9.1"
   }
 }
