@@ -4,6 +4,7 @@ const novel = require('./routes/novel')
 const user = require('./routes/user')
 const oauth = require('./routes/oauth')
 const weapp = require('./routes/weapp')
+const h5 = require('./routes/h5')
 
 module.exports = function (app) {
 
@@ -35,6 +36,7 @@ module.exports = function (app) {
     app.post('/gysw/oauth/vcode', oauth.sendVcode)                       // 发送短信验证码
     app.post('/gysw/oauth/resetpw', oauth.resetpw)                       // 重置密码
     app.post('/gysw/oauth/wxsignin', weapp.signin)                       // 微信小程序登录
+    app.post('/gysw/oauth/h5signin', h5.signin)                          // h5登录
     app.get('/gysw/oauth/token', oauth.getToken)                         // 获取 token
 
     // Not Found
