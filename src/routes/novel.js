@@ -55,7 +55,7 @@ module.exports = {
         const { url } = req.query
 
         if (!url) {
-            return res.json({ code: '9999', message: '章节地址(url)不能为空', data: {} })
+            return res.json({ code: '9999', message: '小说地址(url)不能为空', data: {} })
         }
 
         try {
