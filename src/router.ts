@@ -1,18 +1,18 @@
-const shelf = require('./routes/shelf')
-const search = require('./routes/search')
-const novel = require('./routes/novel')
-const user = require('./routes/user')
-const oauth = require('./routes/oauth')
-const weapp = require('./routes/weapp')
-const h5 = require('./routes/h5')
+import { Application } from 'express'
+import shelf from './routes/shelf'
+import search from './routes/search'
+import novel from './routes/novel'
+import user from './routes/user'
+import oauth from './routes/oauth'
+import weapp from './routes/weapp'
+import h5 from './routes/h5'
 
-module.exports = function (app) {
-
+export default function (app: Application) {
     app.get('/', (req, res) => res.send('hello world!'))
 
     // 书架
     app.post('/gysw/shelf', shelf.addShelf)                            // 往书架中添加一本小说
-    app.delete('/gysw/shelf', shelf.removeShelf)                   // 在书架中删除一本小说
+    app.delete('/gysw/shelf', shelf.removeShelf)                       // 在书架中删除一本小说
     app.get('/gysw/shelf', shelf.getShelfList)                         // 查询书架列表
 
     // 搜索

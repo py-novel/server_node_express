@@ -8,7 +8,7 @@ bluebird.promisifyAll(redis.Multi.prototype)
 const client = redis.createClient()
 
 client.on('connect', function () {
-  console.log('redis connected....')
+    console.log('redis connected....')
 })
 
 global.redis = client

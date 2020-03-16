@@ -1,13 +1,14 @@
-const shelfDao = require('../daos/shelf')
+import { Request, Response } from 'express'
+import shelfDao from '../daos/shelf'
 
-module.exports = {
+export default {
 
     /**
      * 往书架中添加小说
      * 小说介绍页面，添加到书架
      */
-    addShelf: async function (req, res) {
-        const { userId, authorName, bookName, 
+    addShelf: async function (req: Request, res: Response) {
+        const { userId, authorName, bookName,
             bookDesc, bookCoverUrl, recentChapterUrl } = req.body
 
         if (!userId) {
@@ -34,9 +35,11 @@ module.exports = {
             }
 
             // 新增书架书籍
-            await shelfDao.saveShelf({ userId, authorName, bookName, 
-                bookDesc, bookCoverUrl, recentChapterUrl })
-            res.json({ code: '0000', message: '新增书架书籍成功', data: { } })
+            await shelfDao.saveShelf({
+                userId, authorName, bookName,
+                bookDesc, bookCoverUrl, recentChapterUrl
+            })
+            res.json({ code: '0000', message: '新增书架书籍成功', data: {} })
         } catch (e) {
             console.log('[-] routes > shelf > addShelf()', e.message)
             res.json({ code: '9999', message: '新增书架书籍失败', data: {} })
@@ -47,7 +50,7 @@ module.exports = {
      * 删除书架中的小说
      * 小说书架页面，删除书架中的一本书
      */
-    removeShelf: async function (req, res) {
+    removeShelf: async function (req: Request, res: Response) {
         const { id } = req.body
 
         if (!id) {
@@ -66,7 +69,7 @@ module.exports = {
     /**
      * 更新书架小说最新阅读章节
      */
-    editShelf: async function (req, res){
+    editShelf: async function (req: Request, res: Response) {
         const { id } = req.params
         const { recentChapterUrl } = req.body
 
@@ -88,7 +91,7 @@ module.exports = {
      * userId 小说书架页面，根据用户 ID 查询拥有的书籍
      * userId、bookName、authorName 小说介绍页面，判断图书是否已加入书架，避免重复添加
      */
-    getShelfList: async function (req, res) {
+    getShelfList: async function (req: Request, res: Response) {
         const { userId = '' } = req.query
 
         if (!userId) {

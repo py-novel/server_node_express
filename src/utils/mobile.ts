@@ -1,10 +1,10 @@
-const { mobileAppid, mobileAppkey, mobileSignature, mobileTemplateId } = require('../../config')
-const QcloudSms = require('qcloudsms_js')
+import { mobileAppid, mobileAppkey, mobileSignature, mobileTemplateId } from '../config'
+import QcloudSms from 'qcloudsms_js'
 
 /**
  * mobile 可以传一个数组，也可以传一个字符串
  */
-exports.sendMobileSms = function (mobile, params = []) {
+export default function (mobile: string, params: any[] = []): Promise<ResData> {
     return new Promise(function (resolve, reject) {
 
         const qcloudsms = QcloudSms(mobileAppid, mobileAppkey)
@@ -20,13 +20,13 @@ exports.sendMobileSms = function (mobile, params = []) {
         try {
             const ssender = qcloudsms.SmsSingleSender()
             ssender.sendWithParam(86, mobile, mobileTemplateId,
-                params, mobileSignature, '', '', function callback(err, res, resData) {
+                params, mobileSignature, '', '', function callback(err: any, res: any, resData: any) {
                     if (err) {
                         return reject({ code: '9999', message: `短信验证码发送失败：${err}` })
                     } else {
                         return resolve({ code: '0000', message: '短信验证码发送成功', data: resData })
                     }
-                })  
+                })
         } catch (e) {
             return reject({ code: '9999', message: `短信验证码发送失败：${e}` })
         }

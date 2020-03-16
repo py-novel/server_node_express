@@ -1,11 +1,12 @@
-const searchDao = require('../daos/search')
-const novelDao = require('../daos/novel')
+import { Request, Response } from 'express'
+import searchDao from '../daos/search'
+import novelDao from '../daos/novel'
 
-module.exports = {
+export default {
     /**
      * 查询当前用户搜索记录
      */
-    getSearchHist: async function (req, res) {
+    getSearchHist: async function (req: Request, res: Response) {
         const { userId } = req.query
 
         if (!userId) {
@@ -24,7 +25,7 @@ module.exports = {
     /**
      * 查询热门搜索
      */
-    getSearchHot: async function (req, res) {
+    getSearchHot: async function (req: Request, res: Response) {
         try {
             const result = await searchDao.getHotList()
             res.json(result)
@@ -38,7 +39,7 @@ module.exports = {
      * 查询小说列表
      * 查询条件：作者名/小说名
      */
-    getSearchNovel: async function (req, res) {
+    getSearchNovel: async function (req: Request, res: Response) {
         const { keyword, userId } = req.query
 
         if (!keyword) {
@@ -59,7 +60,7 @@ module.exports = {
         }
 
         try {
-            if (reptileResult.data.length > 0) {
+            if (reptileResult && Array.isArray(reptileResult?.data) && reptileResult.data.length > 0) {
                 // 根据 userId 和 keyword 去搜索表中查数据
                 const histResult = await searchDao.getHistList({ keyword, userId })
                 if (histResult.data.length > 0) {

@@ -1,13 +1,14 @@
-const jwt = require('jsonwebtoken')
-const userDao = require('../daos/user')
-const mobileDao = require('../daos/mobile')
-const { tokenSecret, tokenExpiresIn } = require('../../config')
+import { Request, Response } from 'express'
+import userDao from '../daos/user'
+import mobileDao from '../daos/mobile'
+import jwt from '@apacejs/jwt'
+import { tokenExpiresIn } from '../config'
 
-module.exports = {
+export default {
     /**
      * 拿token
      */
-    getToken: async function (req, res) {
+    getToken: async function (req: Request, res: Response) {
         const { userId } = req.query
 
         if (!userId) {
@@ -17,7 +18,7 @@ module.exports = {
         try {
             const result = await userDao.getUser({ userId })
             const username = result.data.username
-            const token = jwt.sign({ username }, tokenSecret, { expiresIn: tokenExpiresIn })
+            const token = jwt.sign({ username }, { expiresIn: tokenExpiresIn })
             res.json({ code: '0000', message: '获取token成功', data: { token } })
         } catch (e) {
             console.log('[-] routes getToken()', e.message)
@@ -28,7 +29,7 @@ module.exports = {
     /**
      * 登录，查询用户
      */
-    signin: async function (req, res) {
+    signin: async function (req: Request, res: Response) {
         const { username, password } = req.body
 
         // 校验参数必填
@@ -42,7 +43,7 @@ module.exports = {
 
             if (result.data.id) {
                 // jwt 生成 token 返回给用户
-                const token = jwt.sign({ username }, tokenSecret, { expiresIn: tokenExpiresIn })
+                const token = jwt.sign({ username }, { expiresIn: tokenExpiresIn })
                 const { id, nickname, avatar_url } = result.data
                 return res.json({
                     code: '0000',
@@ -56,7 +57,7 @@ module.exports = {
                 })
             }
 
-            res.json({ code: '9999', message: '用户名或密码错误', data: {} }) 
+            res.json({ code: '9999', message: '用户名或密码错误', data: {} })
         } catch (e) {
             console.log('[-] routes signin()', e.message)
             res.json({ code: '9999', message: '登录失败', data: {} })
@@ -66,7 +67,7 @@ module.exports = {
     /**
      * 注册，新增用户
      */
-    signup: async function (req, res) {
+    signup: async function (req: Request, res: Response) {
         const { username, password, vcode } = req.body
 
         // 校验参数是否必填以及格式是否正确
@@ -83,7 +84,7 @@ module.exports = {
         if (!vcode) {
             return res.json({ code: '9999', message: '短信验证码不能为空', data: {} })
         }
-        
+
         try {
             // 根据手机号去用户表拿数据，手机号必须没有注册过的，才能进行注册
             const result = await userDao.getUser({ username })
@@ -117,7 +118,7 @@ module.exports = {
     /**
      * 重置密码，修改用户
      */
-    resetpw: async function (req, res) {
+    resetpw: async function (req: Request, res: Response) {
         const { username, password, vcode } = req.body
 
         // 校验参数是否必填以及格式是否正确
@@ -162,7 +163,7 @@ module.exports = {
      * 发送短信验证码
      * type: 'signup' | 'resetpw'
      */
-    sendVcode: async function (req, res) {
+    sendVcode: async function (req: Request, res: Response) {
         const { username, type } = req.body
 
         // 校验参数必填
@@ -179,19 +180,19 @@ module.exports = {
         try {
             // 根据手机号去用户表拿数据
             const result = await userDao.getUser({ username })
-            
+
             // type=“signup” 注册时要求之前没有往用户表插过手机号
             if (type === 'signup' && result.data.id) {
                 return res.json({ code: '9999', message: '手机号已注册，请直接登录' })
             }
-            
+
             // type="resetpw" 重置密码要求之前已经往用户表插过手机号
             if (type === 'resetpw' && !result.data.id) {
                 return res.json({ code: '9999', message: '手机号未注册，请先注册新用户' })
             }
 
             // 发送短信验证码，返回响应
-            const vcodeResult =  await mobileDao.sendVcode({ mobile: username })
+            const vcodeResult = await mobileDao.sendVcode({ mobile: username })
             res.json(vcodeResult)
         } catch (e) {
             console.log('[-] routes sendVcode()', e.message)

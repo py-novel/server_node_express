@@ -1,12 +1,13 @@
-const novelDao = require('../daos/novel')
-const shelfDao = require('../daos/shelf')
+import { Request, Response } from 'express'
+import novelDao from '../daos/novel'
+import shelfDao from '../daos/shelf'
 
-module.exports = {
+export default {
     /**
      * 查询小说内容
      * 更新最新阅读章节
      */
-    getNovelContent: async function (req, res) {
+    getNovelContent: async function (req: Request, res: Response) {
         const { url, shelfId } = req.query
 
         if (!url) {
@@ -32,7 +33,7 @@ module.exports = {
     /**
      * 查看小说章节 
      */
-    getNovelChapter: async function (req, res) {
+    getNovelChapter: async function (req: Request, res: Response) {
         const { url } = req.query
 
         if (!url) {
@@ -51,7 +52,7 @@ module.exports = {
     /**
      * 查询小说详情 
      */
-    getNovelIntro: async function (req, res) {
+    getNovelIntro: async function (req: Request, res: Response) {
         const { url } = req.query
 
         if (!url) {
@@ -70,11 +71,11 @@ module.exports = {
     /**
      * 查看小说分类
      */
-    getNovelClassify: async function (req, res) {
+    getNovelClassify: async function (req: Request, res: Response) {
         try {
             const result = await novelDao.getClassifyList()
             res.json(result)
-        } catch (e) {   
+        } catch (e) {
             console.log('[-] routes > novel > getNovelClassify()', e.message)
             res.json({ code: '9999', message: '查询小说分类列表失败', data: [] })
         }
@@ -83,7 +84,7 @@ module.exports = {
     /**
      * 查询小说列表
      */
-    getNovelList: async function (req, res) {
+    getNovelList: async function (req: Request, res: Response) {
         const { classifyId } = req.query
 
         try {

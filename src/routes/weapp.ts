@@ -1,13 +1,14 @@
-const jwt = require('jsonwebtoken')
-const axios = require('axios')
-const userDao = require('../daos/user')
-const { wxAppId, wxAppSecret, tokenSecret, tokenExpiresIn } = require('../../config')
+import { Request, Response } from 'express'
+import jwt from '@apacejs/jwt'
+import axios from 'axios'
+import userDao from '../daos/user'
+import { wxAppId, wxAppSecret, tokenExpiresIn } from '../config'
 
-module.exports = {
+export default {
     /**
      * 微信小程序登录接口
      */
-    signin: async function (req, res) {
+    signin: async function (req: Request, res: Response) {
         const { code } = req.body
 
         if (!code) {
@@ -22,31 +23,31 @@ module.exports = {
 
             // 查询用户信息
             const userResult = await userDao.getUser({ username: openid })
-            const token = jwt.sign({ username: openid }, tokenSecret, { expiresIn: tokenExpiresIn })
+            const token = jwt.sign({ username: openid }, { expiresIn: tokenExpiresIn })
             // 用户不存在，则新增用户
             if (!userResult.data.id) {
                 const insertResult = await userDao.saveUser({ clientType: 'OPENID', username: openid, password: openid })
                 res.json({
-                    code: '0000', 
-                    message: '获取用户信息成功', 
-                    data: { 
+                    code: '0000',
+                    message: '获取用户信息成功',
+                    data: {
                         userId: insertResult.data.insertId,
                         openId: openid,
-                        token, 
-                    }, 
+                        token,
+                    },
                 })
             } else {
                 const { id, nickname, avatar_url } = userResult.data
-                res.json({ 
-                    code: '0000', 
-                    message: '获取用户信息成功', 
-                    data: { 
+                res.json({
+                    code: '0000',
+                    message: '获取用户信息成功',
+                    data: {
                         userId: id,
-                        openId: openid, 
+                        openId: openid,
                         nickname,
                         avatarUrl: avatar_url,
                         token,
-                    }, 
+                    },
                 })
             }
         } catch (e) {

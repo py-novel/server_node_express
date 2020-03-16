@@ -3,13 +3,15 @@
   "name": "server_node_express",
   "description": "",
   "scripts": {
-    "dev": "supervisor node src/app.js",
+    "dev": "supervisor node lib/app.js",
+    "ts:watch": "tsc -w",
     "lint": "eslint src --fix"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@apacejs/jwt": "^1.0.0-beta.8",
     "axios": "^0.19.0",
     "bluebird": "^3.5.3",
     "body-parser": "^1.18.3",
@@ -29,7 +31,16 @@
     "uuid": "^3.3.2"
   },
   "devDependencies": {
+    "@types/body-parser": "^1.19.0",
+    "@types/cheerio": "^0.22.16",
+    "@types/express": "^4.17.3",
+    "@types/morgan": "^1.9.0",
+    "@types/mysql": "^2.15.9",
+    "@types/nodemailer": "^6.4.0",
+    "@types/qs": "^6.9.1",
+    "@types/uuid": "^7.0.0",
     "eslint": "^6.6.0",
-    "morgan": "^1.9.1"
+    "morgan": "^1.9.1",
+    "typescript": "^3.8.3"
   }
 }

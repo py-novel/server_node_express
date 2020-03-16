@@ -1,5 +1,5 @@
-const mysql = require('mysql')
-const { dbHost, dbUser, dbPassword, dbDatabase } = require('../../config')
+import mysql from 'mysql'
+import { dbHost, dbUser, dbPassword, dbDatabase } from '../config'
 
 const db = mysql.createPool({
     host: dbHost,
@@ -14,10 +14,7 @@ global.dbexec = function (sql, params) {
     return new Promise(function (resolve, reject) {
         db.query(sql, params, (err, result) => {
             if (err) reject({ code: '9999', message: err })
-            resolve({ code: '0000', message: '操作成功', data: result})
+            resolve({ code: '0000', message: '操作成功', data: result })
         })
     })
 }
-
-
-

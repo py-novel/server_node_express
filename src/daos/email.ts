@@ -1,11 +1,11 @@
-const { emailAccount } = require('../../config')
+import { emailAccount } from '../config'
 
-module.exports = {
+export default {
 
     /**
      * 发送 email 邮件
      */
-    sendEmailCode: async function ({ email, userId }) {
+    sendEmailCode: async function ({ email, userId }: { email: string; userId: number }) {
         const code = String(Math.random().toFixed(6)).substr(2)
         const mailOption = {
             from: emailAccount,                          // 发件人
@@ -18,7 +18,7 @@ module.exports = {
             </h3>`,
         }
 
-        const result = await sendMail(mailOption)
+        const result = await global.sendEmail(mailOption)
         // 保存/更新邮箱校验码
         await redis.hmsetAsync(`user${userId}`, { email: code })
         return result
@@ -27,12 +27,12 @@ module.exports = {
     /**
      * 校验验证码输入是否正确
      */
-    validateEcode: async function ({ code, userId }) {
+    validateEcode: async function ({ code, userId }: { code: string; userId: number }) {
         try {
             // 从 redis 中读取邮箱验证码
             const emailCode = await redis.hgetAsync(`user${userId}`, 'email')
             if (!emailCode) return { code: '9999', message: '邮箱校验超时，请重新发送验证码', data: {} }
-            
+
             if (emailCode !== code) {
                 return { code: '9999', message: '邮箱校验码输入错误', data: {} }
             }
@@ -50,7 +50,7 @@ module.exports = {
     /**
      * 发送用户反馈邮件
      */
-    sendFeedbackEmail: async function ({ title, content, userId, email }) {
+    sendFeedbackEmail: async function ({ title, content, userId, email }: { title: string, content: string, userId: number, email: string }) {
         const mailOption = {
             from: emailAccount,                          // 发件人
             to: 'me@dkvirus.com',                        // 收件人
@@ -63,8 +63,8 @@ module.exports = {
             `,
         }
 
-        const result = await sendMail(mailOption)
-        return result        
+        const result = await global.sendEmail(mailOption)
+        return result
     },
 
 }

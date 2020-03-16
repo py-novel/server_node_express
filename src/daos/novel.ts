@@ -1,20 +1,20 @@
-const axios = require('axios')
-const qs = require('querystring')
-const iconv = require('iconv-lite')
-const cheerio = require('cheerio')
-const uuidv4 = require('uuid/v4')
+import axios from 'axios'
+import qs from 'querystring'
+import iconv from 'iconv-lite'
+import cheerio from 'cheerio'
+import { v4 as uuidv4 } from 'uuid'
 
-module.exports = {
+export default {
 
     /**
      * 查询小说列表数据
      */
-    getNovelList: async function ({ classifyId }) {
+    getNovelList: async function ({ classifyId }: { classifyId: number }) {
         let sql = 'select * from gysw_novel where 1 = 1'
         if (classifyId) {
             sql += ` and classify_id = ${classifyId}`
         }
-        const result = await dbexec(sql)
+        const result = await global.dbexec(sql)
         return result
     },
 
@@ -23,14 +23,14 @@ module.exports = {
      */
     getClassifyList: async function () {
         const sql = 'SELECT * FROM gysw_classify'
-        const result = await dbexec(sql)
+        const result = await global.dbexec(sql)
         return result
     },
 
     /**
      * 爬虫爬取小说列表
      */
-    reptileNovelList: async function ({ keyword }) {
+    reptileNovelList: async function ({ keyword }: { keyword: string }): Promise<ResData> {
         const target_url = 'https://www.biquge5200.cc/modules/article/search.php?searchkey=' + qs.escape(keyword)
         const response = await axios.get(target_url, {
             headers: {
@@ -59,7 +59,7 @@ module.exports = {
     /**
      * 爬虫爬取小说详情
      */
-    reptileNovelIntro: async function ({ url }) {
+    reptileNovelIntro: async function ({ url }: { url: string }) {
         const response = await axios.get(url, {
             headers: {
                 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.37 70.100 Safari/537.36',
@@ -88,7 +88,7 @@ module.exports = {
     /**
      * 爬虫爬取小说章节列表
      */
-    reptileChapterList: async function ({ url }) {
+    reptileChapterList: async function ({ url }: { url: string }) {
         const response = await axios.get(url, {
             headers: {
                 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.37 70.100 Safari/537.36',
@@ -103,7 +103,7 @@ module.exports = {
 
         if ($dds.length === 0) {
             throw new Error('小说网址错误，没查到小说章节')
-        }   
+        }
 
         const result = []
         for (let i = 0; i < $dds.length; i++) {
@@ -120,7 +120,7 @@ module.exports = {
     /**
      * 爬虫爬取小说内容
      */
-    reptileNovelContent: async function ({ url }) {
+    reptileNovelContent: async function ({ url }: { url: string }) {
         const response = await axios.get(url, {
             headers: {
                 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.37 70.100 Safari/537.36',

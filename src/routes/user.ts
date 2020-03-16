@@ -1,10 +1,11 @@
-const userDao = require('../daos/user')
+import { Request, Response } from 'express'
+import userDao from '../daos/user'
 
-module.exports = {
+export default {
 
-    updateUser: async function (req, res) {
+    updateUser: async function (req: Request, res: Response) {
         const { userId, nickname, avatarUrl, address, gender } = req.body
-        
+
         if (!userId) {
             return res.json({ code: '9999', message: '用户ID(userId)不能为空', data: {} })
         }
