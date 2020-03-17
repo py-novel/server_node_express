@@ -1,20 +1,20 @@
-import mysql from 'mysql'
+import 'reflect-metadata'
+import { createConnection } from 'typeorm'
+import path from 'path'
 import { dbHost, dbUser, dbPassword, dbDatabase } from '../config'
 
-const db = mysql.createPool({
-    host: dbHost,
-    user: dbUser,
-    password: dbPassword,
-    database: dbDatabase,
-})
-
-global.db = db
-
-global.dbexec = function (sql, params) {
-    return new Promise(function (resolve, reject) {
-        db.query(sql, params, (err, result) => {
-            if (err) reject({ code: '9999', message: err })
-            resolve({ code: '0000', message: '操作成功', data: result })
-        })
+export default function getConnection() {
+    return createConnection({
+        type: 'mysql',
+        host: dbHost,
+        port: 3306,
+        username: dbUser,
+        password: dbPassword,
+        database: dbDatabase,
+        entities: [
+            path.join(__dirname, '../entity/**.js')
+        ],
+        synchronize: true,
+        logging: false
     })
 }
