@@ -2,8 +2,6 @@
 
 Node + Express + Mariadb 提供后台接口服务。
 
-### Run Project
-
 **Clone Project**
 
 ``` bash
@@ -19,13 +17,13 @@ $ yarn
 
 **Init Data**
 
-建表 + 初始化表数据。（需要修改 src/config.ts 文件添加数据库相关信息，关于 config.ts => [详情](./document/config.md)）
+建表 + 初始化表数据。（需要修改 [src/config.ts](./document/config.md) 文件添加数据库相关信息）
 
 ``` bash
 $ npm run init
 ```
 
-**Run**
+**Dev**
 
 ``` bash
 $ npm run ts:watch
@@ -39,7 +37,7 @@ $ npm run dev
 
 访问 `localhost:4000/api/v3`。
 
-### TODO
+**TODO**
 
 - [x] 升级到 typescript 版本；
 - [x] 编写 ts 对应文档；
