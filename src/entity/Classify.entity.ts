@@ -1,8 +1,11 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm'
-import Novel from './Novel'
+import Novel from './Novel.entity'
 
 @Entity()
 export default class Classify {
+    constructor(classifyId?: string) {
+        if (classifyId) this.id = classifyId
+    }
 
     @PrimaryGeneratedColumn('uuid', { comment: '主键' })
     id: string;

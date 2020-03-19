@@ -1,12 +1,15 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm'
-import Search from './Search'
-import Shelf from './Shelf'
+import Search from './Search.entity'
+import Shelf from './Shelf.entity'
 
 @Entity()
 export default class User {
+    constructor(id?: string) {
+        if (id) this.id = id
+    }
 
     @PrimaryGeneratedColumn('uuid', { comment: '主键' })
-    id: number;
+    id: string;
 
     @Column({ comment: '用户名' })
     username: string;

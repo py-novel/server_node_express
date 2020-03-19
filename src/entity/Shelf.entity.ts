@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm'
-import User from './User';
+import User from './User.entity';
 
 @Entity()
 export default class Shelf {

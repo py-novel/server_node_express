@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm'
-import Classify from './Classify';
+import Classify from './Classify.entity';
 
 @Entity()
 export default class Novel {
@@ -23,7 +23,6 @@ export default class Novel {
 
     @Column('date', { name: 'last_update_at', comment: '最后更新时间' })
     lastUpdateAt: Date;
-
 
     @ManyToOne(type => Classify, classify => classify.novels, { nullable: false })
     @JoinColumn({ name: 'classify_id' })
