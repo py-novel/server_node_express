@@ -8,7 +8,7 @@ import weapp from './routes/weapp'
 import h5 from './routes/h5'
 
 export default function (app: Application) {
-    app.get('/', (req, res) => res.send('hello world!'))
+    app.get('/test', (req, res) => { res.send('hello') })
 
     // 书架
     app.post('/gysw/shelf', shelf.addShelf)                            // 往书架中添加一本小说

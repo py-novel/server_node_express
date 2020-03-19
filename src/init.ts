@@ -2,11 +2,11 @@ import debug from 'debug'
 import { Connection, Repository } from 'typeorm'
 import getConnection from './utils/db'
 
-import Classify from './entity/Classify'
-import Shelf from './entity/Shelf'
-import Novel from './entity/Novel'
-import User from './entity/User'
-import Search from './entity/Search'
+import Classify from './entity/Classify.entity'
+import Shelf from './entity/Shelf.entity'
+import Novel from './entity/Novel.entity'
+import User from './entity/User.entity'
+import Search from './entity/Search.entity'
 
 const classifyLog = debug('classify')
 const novelLog = debug('novel')

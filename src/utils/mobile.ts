@@ -4,7 +4,7 @@ import QcloudSms from 'qcloudsms_js'
 /**
  * mobile 可以传一个数组，也可以传一个字符串
  */
-export default function (mobile: string, params: any[] = []): Promise<ResData> {
+export default function (mobile: string, params: any[] = []): Promise<any> {
     return new Promise(function (resolve, reject) {
 
         const qcloudsms = QcloudSms(mobileAppid, mobileAppkey)
