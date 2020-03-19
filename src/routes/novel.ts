@@ -1,6 +1,9 @@
 import { Request, Response } from 'express'
 import novelDao from '../daos/novel'
-import shelfDao from '../daos/shelf'
+
+import shelfService from '../services/shelf.service'
+import classifyService from '../services/classify.service'
+import novelService from '../services/novel.service'
 
 export default {
     /**
@@ -24,7 +27,11 @@ export default {
 
         try {
             // 更新小说最新阅读章节
-            await shelfDao.updateShelf({ id: shelfId, recentChapterUrl: url })
+            const shelf = await shelfService.findOneById(shelfId)
+            if (shelf) {
+                shelf.recentChapterUrl = url
+                await shelfService.saveShelf(shelf)
+            }
         } catch (e) {
             console.log('[-] routes > novel > getNovelContent()', e.message)
         }
@@ -73,8 +80,8 @@ export default {
      */
     getNovelClassify: async function (req: Request, res: Response) {
         try {
-            const result = await novelDao.getClassifyList()
-            res.json(result)
+            const classifies = await classifyService.findAll()
+            res.json({ code: '0000', message: '操作成功', data: classifies })
         } catch (e) {
             console.log('[-] routes > novel > getNovelClassify()', e.message)
             res.json({ code: '9999', message: '查询小说分类列表失败', data: [] })
@@ -88,8 +95,8 @@ export default {
         const { classifyId } = req.query
 
         try {
-            const result = await novelDao.getNovelList({ classifyId })
-            res.json(result)
+            const novels = await novelService.findListByClassify(classifyId)
+            res.json({ code: '0000', message: '操作成功', data: novels })
         } catch (e) {
             console.log('[-] routes > novel > getNovelList()', e.message)
             res.json({ code: '9999', message: '查询小说列表失败', data: [] })

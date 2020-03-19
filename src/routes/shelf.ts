@@ -1,5 +1,8 @@
 import { Request, Response } from 'express'
-import shelfDao from '../daos/shelf'
+
+import Shelf from '../entity/Shelf.entity'
+import User from '../entity/User.entity'
+import shelfService from '../services/shelf.service'
 
 export default {
 
@@ -29,16 +32,21 @@ export default {
 
         try {
             // 判断书籍是否已存在该用户书架中，避免重复添加
-            const getResult = await shelfDao.getShelfList({ userId, authorName, bookName })
-            if (getResult.data.length > 0) {
+            const count = await shelfService.findCountByUserIdAndAuthornameAndBookname(userId, authorName, bookName)
+
+            if (count > 0) {
                 return res.json({ code: '9999', message: '该书籍已在书架中，不可重复添加', data: {} })
             }
 
             // 新增书架书籍
-            await shelfDao.saveShelf({
-                userId, authorName, bookName,
-                bookDesc, bookCoverUrl, recentChapterUrl
-            })
+            const shelf = new Shelf()
+            shelf.authorName = authorName
+            shelf.bookName = bookName
+            shelf.bookDesc = bookDesc
+            shelf.bookCoverUrl = bookCoverUrl
+            shelf.recentChapterUrl = recentChapterUrl
+            shelf.user = new User(userId)
+            await shelfService.saveShelf(shelf)
             res.json({ code: '0000', message: '新增书架书籍成功', data: {} })
         } catch (e) {
             console.log('[-] routes > shelf > addShelf()', e.message)
@@ -58,8 +66,13 @@ export default {
         }
 
         try {
-            await shelfDao.deleteShelf({ id })
-            res.json({ code: '0000', message: '删除书架书籍信息成功', data: {} })
+            const shelf = await shelfService.findOneById(id)
+            if (shelf) {
+                await shelfService.removeShelf(shelf)
+                res.json({ code: '0000', message: '删除书架书籍信息成功', data: {} })
+            } else {
+                res.json({ code: '9999', message: '删除书架书籍信息失败', data: {} })
+            }
         } catch (e) {
             console.log('[-] routes > shelf > removeShelf()', e.message)
             res.json({ code: '9999', message: '删除书架书籍信息失败', data: {} })
@@ -78,8 +91,15 @@ export default {
         }
 
         try {
-            await shelfDao.updateShelf({ id, recentChapterUrl })
-            res.json({ code: '0000', message: '更新书架书籍信息成功', data: {} })
+            const shelf = await shelfService.findOneById(id)
+
+            if (shelf) {
+                shelf.recentChapterUrl = recentChapterUrl
+                await shelfService.saveShelf(shelf)
+                res.json({ code: '0000', message: '更新书架书籍信息成功', data: {} })
+            } else {
+                res.json({ code: '9999', message: '更新书架书籍信息失败', data: {} })
+            }
         } catch (e) {
             console.log('[-] routes > shelf > editShelf()', e.message)
             res.json({ code: '9999', message: '更新书架书籍信息失败', data: {} })
@@ -99,8 +119,8 @@ export default {
         }
 
         try {
-            const result = await shelfDao.getShelfList({ userId })
-            res.json(result)
+            const shelfs = await shelfService.findAllByUserId(userId)
+            res.json({ code: '0000', message: '操作成功', data: shelfs })
         } catch (e) {
             console.log('[-] routes > shelf > getShelf()', e.message)
             res.json({ code: '9999', message: '获取书架列表失败', data: [] })

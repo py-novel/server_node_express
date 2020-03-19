@@ -1,6 +1,9 @@
 import { Request, Response } from 'express'
-import searchDao from '../daos/search'
 import novelDao from '../daos/novel'
+
+import Search from '../entity/Search.entity'
+import User from '../entity/User.entity'
+import searchService from '../services/search.service'
 
 export default {
     /**
@@ -14,8 +17,8 @@ export default {
         }
 
         try {
-            const result = await searchDao.getHistList({ userId })
-            res.json(result)
+            const hists = await searchService.findHistsByUserId(userId)
+            res.json({ code: '0000', message: '操作成功', data: hists })
         } catch (e) {
             console.log('[-] routes > search > getSearchHist()', e.message)
             res.json({ code: '9999', message: '查询搜索历史记录失败', data: [] })
@@ -27,8 +30,8 @@ export default {
      */
     getSearchHot: async function (req: Request, res: Response) {
         try {
-            const result = await searchDao.getHotList()
-            res.json(result)
+            const hots = await searchService.findHots()
+            res.json({ code: '0000', message: '操作成功', data: hots })
         } catch (e) {
             console.log('[-] routes > search > getSearchHot()', e.message)
             res.json({ code: '9999', message: '查询搜索热门记录失败', data: [] })
@@ -62,15 +65,21 @@ export default {
         try {
             if (reptileResult && Array.isArray(reptileResult?.data) && reptileResult.data.length > 0) {
                 // 根据 userId 和 keyword 去搜索表中查数据
-                const histResult = await searchDao.getHistList({ keyword, userId })
-                if (histResult.data.length > 0) {
+                const hist = await searchService.findHotByUserIdAndKeyword(userId, keyword)
+                if (hist) {
                     // 已搜过关键词，更改次数
-                    const times = histResult.data[0].times + 1
-                    await searchDao.updateSearch({ times, userId, keyword })
+                    const times = hist.times + 1
+                    hist.times = times
+                    hist.lastUpdateAt = new Date()
+                    await searchService.saveSearch(hist)
                     console.log('更新搜索历史记录成功 userId=%o, keyword=%o', userId, keyword)
                 } else {
                     // 未搜过关键词，新增
-                    await searchDao.saveSearch({ userId, keyword })
+                    const newSearch = new Search()
+                    newSearch.user = new User(userId)
+                    newSearch.keyword = keyword
+                    newSearch.lastUpdateAt = new Date()
+                    await searchService.saveSearch(newSearch)
                     console.log('新增搜索历史记录成功 userId=%o, keyword=%o', userId, keyword)
                 }
             }

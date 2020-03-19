@@ -756,6 +756,11 @@ etag@~1.8.1:
   resolved "https://registry.npm.taobao.org/etag/download/etag-1.8.1.tgz#41ae2eeb65efa62268aebfea83ac7d79299b0887"
   integrity sha1-Qa4u62XvpiJorr/qg6x9eSmbCIc=
 
+express-async-errors@^3.1.1:
+  version "3.1.1"
+  resolved "https://registry.npm.taobao.org/express-async-errors/download/express-async-errors-3.1.1.tgz#6053236d61d21ddef4892d6bd1d736889fc9da41"
+  integrity sha1-YFMjbWHSHd70iS1r0dc2iJ/J2kE=
+
 express-session@^1.15.6:
   version "1.17.0"
   resolved "https://registry.npm.taobao.org/express-session/download/express-session-1.17.0.tgz#9b50dbb5e8a03c3537368138f072736150b7f9b3"

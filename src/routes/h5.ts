@@ -1,7 +1,8 @@
 import { Request, Response } from 'express'
 import jwt from '@apacejs/jwt'
 import { tokenExpiresIn } from '../config'
-import userDao from '../daos/user'
+import User from '../entity/User.entity'
+import userService from '../services/user.service'
 
 export default {
     /**
@@ -16,29 +17,30 @@ export default {
 
         try {
             // 查询用户信息
-            const userResult = await userDao.getUser({ username })
-            const token = jwt.sign({ username }, { expiresIn: tokenExpiresIn })
+            let user = await userService.findOneByUsername(username)
+
             // 用户不存在，则新增用户
-            if (!userResult.data.id) {
-                const insertResult = await userDao.saveUser({ clientType: 'H5', username, password: username })
-                res.json({
-                    code: '0000',
-                    message: '获取用户信息成功',
-                    data: {
-                        userId: insertResult.data.insertId,
-                        token,
-                    },
-                })
-            } else {
-                res.json({
-                    code: '0000',
-                    message: '获取用户信息成功',
-                    data: {
-                        userId: userResult.data.id,
-                        token,
-                    },
-                })
+            if (!user) {
+                const newUser = new User()
+                newUser.clientType = 'H5'
+                newUser.username = username
+                newUser.password = username
+
+                // 保存用户
+                user = await userService.saveUser(newUser)
             }
+
+            // 获取 token
+            const token = jwt.sign({ username }, { expiresIn: tokenExpiresIn })
+
+            res.json({
+                code: '0000',
+                message: '获取用户信息成功',
+                data: {
+                    userId: user.id,
+                    token,
+                }
+            })
         } catch (e) {
             console.log('[-] routes > h5 > signin()', e.message)
             res.json({ code: '9999', message: '获取用户信息失败', data: {} })

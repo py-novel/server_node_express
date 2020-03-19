@@ -1,8 +1,9 @@
 import { Request, Response } from 'express'
-import userDao from '../daos/user'
 import mobileDao from '../daos/mobile'
 import jwt from '@apacejs/jwt'
 import { tokenExpiresIn } from '../config'
+import User from '../entity/User.entity'
+import userService from '../services/user.service'
 
 export default {
     /**
@@ -16,10 +17,14 @@ export default {
         }
 
         try {
-            const result = await userDao.getUser({ userId })
-            const username = result.data.username
-            const token = jwt.sign({ username }, { expiresIn: tokenExpiresIn })
-            res.json({ code: '0000', message: '获取token成功', data: { token } })
+            const user = await userService.findOneById(userId)
+
+            if (user) {
+                const username = user.username
+                const token = jwt.sign({ username }, { expiresIn: tokenExpiresIn })
+                res.json({ code: '0000', message: '获取token成功', data: { token } })
+            }
+            res.json({ code: '9999', message: '获取token失败', data: {} })
         } catch (e) {
             console.log('[-] routes getToken()', e.message)
             res.json({ code: '9999', message: '获取token失败', data: {} })
@@ -39,19 +44,19 @@ export default {
 
         try {
             // 根据手机号和密码查询用户信息
-            const result = await userDao.getUser({ username, password })
+            const user = await userService.findOneByUsernameAndPassword(username, password)
 
-            if (result.data.id) {
+            if (user) {
                 // jwt 生成 token 返回给用户
                 const token = jwt.sign({ username }, { expiresIn: tokenExpiresIn })
-                const { id, nickname, avatar_url } = result.data
+                const { id, nickname, avatarUrl } = user
                 return res.json({
                     code: '0000',
                     message: '登录成功',
                     data: {
                         userId: id,
                         nickname,
-                        avatarUrl: avatar_url,
+                        avatarUrl,
                         token,
                     },
                 })
@@ -87,8 +92,8 @@ export default {
 
         try {
             // 根据手机号去用户表拿数据，手机号必须没有注册过的，才能进行注册
-            const result = await userDao.getUser({ username })
-            if (result.data.id) {
+            const user = await userService.findOneByUsername(username)
+            if (user) {
                 return res.json({ code: '9999', message: '手机号已注册，请直接登录' })
             }
 
@@ -100,13 +105,16 @@ export default {
             }
 
             // 验证码正确，新增一条用户信息
-            const clientType = 'MOBILE'
-            const userResult = await userDao.saveUser({ username, password, clientType })
+            let newUser = new User()
+            newUser.username = username
+            newUser.password = password
+            newUser.clientType = 'MOBILE'
+            newUser = await userService.saveUser(newUser)
             res.json({
                 code: '0000',
                 message: '注册成功',
                 data: {
-                    userId: userResult.data.insertId,
+                    userId: newUser.id,
                 },
             })
         } catch (e) {
@@ -138,8 +146,9 @@ export default {
 
         try {
             // 根据手机号去用户表拿数据，重置密码要求手机号必须已经注册过，才能改密码
-            const result = await userDao.getUser({ username })
-            if (!result.data.id) {
+            const user = await userService.findOneByUsername(username)
+
+            if (!user) {
                 return res.json({ code: '9999', message: '手机号未注册，请先注册新用户' })
             }
 
@@ -151,7 +160,8 @@ export default {
             }
 
             // 验证码输入正确，修改用户密码
-            await userDao.updateUser({ username, password })
+            user.password = password
+            await userService.saveUser(user)
             res.json({ code: '0000', message: '重置密码成功', data: {} })
         } catch (e) {
             console.log('[-] routes resetpw()', e.message)
@@ -179,15 +189,15 @@ export default {
 
         try {
             // 根据手机号去用户表拿数据
-            const result = await userDao.getUser({ username })
+            const user = await userService.findOneByUsername(username)
 
             // type=“signup” 注册时要求之前没有往用户表插过手机号
-            if (type === 'signup' && result.data.id) {
+            if (type === 'signup' && user) {
                 return res.json({ code: '9999', message: '手机号已注册，请直接登录' })
             }
 
             // type="resetpw" 重置密码要求之前已经往用户表插过手机号
-            if (type === 'resetpw' && !result.data.id) {
+            if (type === 'resetpw' && !user) {
                 return res.json({ code: '9999', message: '手机号未注册，请先注册新用户' })
             }
 

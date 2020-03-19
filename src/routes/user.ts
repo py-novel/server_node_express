@@ -1,5 +1,6 @@
 import { Request, Response } from 'express'
-import userDao from '../daos/user'
+import User from '../entity/User.entity'
+import userService from '../services/user.service'
 
 export default {
 
@@ -10,9 +11,16 @@ export default {
             return res.json({ code: '9999', message: '用户ID(userId)不能为空', data: {} })
         }
 
+        const params = new User()
+        params.id = userId
+        params.nickname = nickname
+        params.avatarUrl = avatarUrl
+        params.address = address
+        params.gender = gender
+
         try {
-            const result = await userDao.updateUser({ nickname, avatarUrl, userId, address, gender })
-            res.json(result)
+            const user = await userService.updateUser(params)
+            res.json({ code: '0000', message: '操作成功', data: user })
         } catch (e) {
             console.log('[-] routes > user > updateUser()', e.message)
             res.json({ code: '9999', message: '修改用户信息失败', data: {} })
