@@ -1,5 +1,4 @@
 import { Request, Response } from 'express'
-import novelDao from '../daos/novel'
 
 import shelfService from '../service/shelf.service'
 import classifyService from '../service/classify.service'
@@ -18,8 +17,8 @@ export default {
         }
 
         try {
-            const result = await novelDao.reptileNovelContent({ url })
-            res.json(result)
+            const result = await novelService.reptileNovelContent(url)
+            res.json({ code: '0000', message: '操作成功', data: result })
         } catch (e) {
             console.log('[-] routes > novel > getNovelContent()', e.message)
             res.json({ code: '9999', message: '查询小说内容信息失败', data: [] })
@@ -48,8 +47,8 @@ export default {
         }
 
         try {
-            const result = await novelDao.reptileChapterList({ url })
-            res.json(result)
+            const result = await novelService.reptileNovelChapter(url)
+            res.json({ code: '0000', message: '操作成功', data: result })
         } catch (e) {
             console.log('[-] routes > novel > getNovelChapter()', e.message)
             res.json({ code: '9999', message: '查询小说章节列表信息失败', data: [] })
@@ -67,8 +66,8 @@ export default {
         }
 
         try {
-            const result = await novelDao.reptileNovelIntro({ url })
-            res.json(result)
+            const result = await novelService.reptileNovelIntro(url)
+            res.json({ code: '0000', message: '操作成功', data: result })
         } catch (e) {
             console.log('[-] routes > novel > getNovelIntro()', e.message)
             res.json({ code: '9999', message: '查询小说详情信息失败', data: {} })
@@ -95,7 +94,7 @@ export default {
         const { classifyId } = req.query
 
         try {
-            const novels = await novelService.findListByClassify(classifyId)
+            const novels = await novelService.findNovelsByClassify(classifyId)
             res.json({ code: '0000', message: '操作成功', data: novels })
         } catch (e) {
             console.log('[-] routes > novel > getNovelList()', e.message)

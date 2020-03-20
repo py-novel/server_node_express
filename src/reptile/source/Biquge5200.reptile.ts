@@ -2,12 +2,12 @@ import cheerio from 'cheerio'
 import qs from 'querystring'
 
 import BaseReptile from './Base.reptile'
-import { getHtml, getRandomAlphaNum } from './util'
+import { getHtml, getRandomAlphaNum } from '../util'
 
-import NovelSearch from './entity/NovelSearch'
-import NovelIntro from './entity/NovelIntro'
-import NovelChapter from './entity/NovelChapter'
-import NovelContent from './entity/NovelContent'
+import NovelSearch from '../entity/NovelSearch'
+import NovelIntro from '../entity/NovelIntro'
+import NovelChapter from '../entity/NovelChapter'
+import NovelContent from '../entity/NovelContent'
 
 export default class Biquge5200Reptile implements BaseReptile {
     async reptileNovelList(keyword: string): Promise<NovelSearch[]> {
