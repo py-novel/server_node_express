@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import User from '../entity/User.entity'
-import userService from '../services/user.service'
+import userService from '../service/user.service'
 
 export default {
 

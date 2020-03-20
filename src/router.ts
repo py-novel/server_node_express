@@ -7,8 +7,14 @@ import oauth from './routes/oauth'
 import weapp from './routes/weapp'
 import h5 from './routes/h5'
 
+import Biquge5200 from './reptile/Biquge5200.reptile'
+
 export default function (app: Application) {
-    app.get('/test', (req, res) => { res.send('hello') })
+    app.get('/test', async (req, res) => {
+        const s = new Biquge5200()
+        const novels = await s.reptileNovelList('七品')
+        res.json(novels)
+    })
 
     // 书架
     app.post('/gysw/shelf', shelf.addShelf)                            // 往书架中添加一本小说

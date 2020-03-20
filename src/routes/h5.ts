@@ -2,7 +2,7 @@ import { Request, Response } from 'express'
 import jwt from '@apacejs/jwt'
 import { tokenExpiresIn } from '../config'
 import User from '../entity/User.entity'
-import userService from '../services/user.service'
+import userService from '../service/user.service'
 
 export default {
     /**

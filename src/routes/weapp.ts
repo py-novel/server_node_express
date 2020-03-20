@@ -3,7 +3,7 @@ import jwt from '@apacejs/jwt'
 import axios from 'axios'
 import { wxAppId, wxAppSecret, tokenExpiresIn } from '../config'
 import User from '../entity/User.entity'
-import userService from '../services/user.service'
+import userService from '../service/user.service'
 
 export default {
     /**

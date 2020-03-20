@@ -2,7 +2,7 @@ import { Request, Response } from 'express'
 
 import Shelf from '../entity/Shelf.entity'
 import User from '../entity/User.entity'
-import shelfService from '../services/shelf.service'
+import shelfService from '../service/shelf.service'
 
 export default {
 

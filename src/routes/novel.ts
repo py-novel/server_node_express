@@ -1,9 +1,9 @@
 import { Request, Response } from 'express'
 import novelDao from '../daos/novel'
 
-import shelfService from '../services/shelf.service'
-import classifyService from '../services/classify.service'
-import novelService from '../services/novel.service'
+import shelfService from '../service/shelf.service'
+import classifyService from '../service/classify.service'
+import novelService from '../service/novel.service'
 
 export default {
     /**

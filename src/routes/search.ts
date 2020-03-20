@@ -3,7 +3,7 @@ import novelDao from '../daos/novel'
 
 import Search from '../entity/Search.entity'
 import User from '../entity/User.entity'
-import searchService from '../services/search.service'
+import searchService from '../service/search.service'
 
 export default {
     /**
