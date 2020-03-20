@@ -1,7 +1,6 @@
 import { emailAccount } from '../config'
 
 export default {
-
     /**
      * 发送 email 邮件
      */
@@ -66,5 +65,4 @@ export default {
         const result = await global.sendEmail(mailOption)
         return result
     },
-
 }
