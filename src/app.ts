@@ -15,8 +15,6 @@ import trunApiprefix from './middleware/trunApiprefix'
 const log = debug('src/app')
 const app = express()
 
-app.use(morgan('dev'))                  // 打印请求信息
-
 // Ignore favicon
 app.use(ignoreFavicon())
 

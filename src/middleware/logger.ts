@@ -14,11 +14,7 @@ function print(m: string) { log(m); return print; }
 
 export default function () {
     return (req: Request, res: Response, next: NextFunction) => {
-        print
-            (`${new Date().toLocaleString()}【${req.method}  ${req.originalUrl}】`)
-            (`请求参数(req.query)：${JSON.stringify(req.query)}`)
-            (`请求参数(req.body)：${JSON.stringify(req.body)}`)
-
+        print(`${new Date().toLocaleString()}【${req.method}  ${req.originalUrl}】`)
         next()
     }
 }
