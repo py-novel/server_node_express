@@ -3,6 +3,7 @@ import { Request, Response } from 'express'
 import shelfService from '../service/shelf.service'
 import classifyService from '../service/classify.service'
 import novelService from '../service/novel.service'
+import AdminResponse from './AdminResponse'
 
 export default {
     /**
@@ -13,15 +14,15 @@ export default {
         const { url, shelfId } = req.query
 
         if (!url) {
-            return res.json({ code: '9999', message: '章节地址(url)不能为空', data: {} })
+            return res.json(AdminResponse.failure('章节地址(url)不能为空'))
         }
 
         try {
             const result = await novelService.reptileNovelContent(url)
-            res.json({ code: '0000', message: '操作成功', data: result })
+            res.json(AdminResponse.success(result))
         } catch (e) {
             console.log('[-] routes > novel > getNovelContent()', e.message)
-            res.json({ code: '9999', message: '查询小说内容信息失败', data: [] })
+            res.json(AdminResponse.failure('查询小说内容信息失败'))
         }
 
         try {
@@ -43,15 +44,15 @@ export default {
         const { url } = req.query
 
         if (!url) {
-            return res.json({ code: '9999', message: '章节地址(url)不能为空', data: {} })
+            return res.json(AdminResponse.failure('章节地址(url)不能为空'))
         }
 
         try {
             const result = await novelService.reptileNovelChapter(url)
-            res.json({ code: '0000', message: '操作成功', data: result })
+            res.json(AdminResponse.success(result))
         } catch (e) {
             console.log('[-] routes > novel > getNovelChapter()', e.message)
-            res.json({ code: '9999', message: '查询小说章节列表信息失败', data: [] })
+            res.json(AdminResponse.failure('查询小说章节列表信息失败'))
         }
     },
 
@@ -62,15 +63,15 @@ export default {
         const { url } = req.query
 
         if (!url) {
-            return res.json({ code: '9999', message: '小说地址(url)不能为空', data: {} })
+            return res.json(AdminResponse.failure('小说地址(url)不能为空'))
         }
 
         try {
             const result = await novelService.reptileNovelIntro(url)
-            res.json({ code: '0000', message: '操作成功', data: result })
+            res.json(AdminResponse.success(result))
         } catch (e) {
             console.log('[-] routes > novel > getNovelIntro()', e.message)
-            res.json({ code: '9999', message: '查询小说详情信息失败', data: {} })
+            res.json(AdminResponse.failure('查询小说详情信息失败'))
         }
     },
 
@@ -80,10 +81,10 @@ export default {
     getNovelClassify: async function (req: Request, res: Response) {
         try {
             const classifies = await classifyService.findAll()
-            res.json({ code: '0000', message: '操作成功', data: classifies })
+            res.json(AdminResponse.success(classifies))
         } catch (e) {
             console.log('[-] routes > novel > getNovelClassify()', e.message)
-            res.json({ code: '9999', message: '查询小说分类列表失败', data: [] })
+            res.json(AdminResponse.failure('查询小说分类列表失败'))
         }
     },
 
@@ -95,10 +96,10 @@ export default {
 
         try {
             const novels = await novelService.findNovelsByClassify(classifyId)
-            res.json({ code: '0000', message: '操作成功', data: novels })
+            res.json(AdminResponse.success(novels))
         } catch (e) {
             console.log('[-] routes > novel > getNovelList()', e.message)
-            res.json({ code: '9999', message: '查询小说列表失败', data: [] })
+            res.json(AdminResponse.failure('查询小说列表失败'))
         }
     },
 

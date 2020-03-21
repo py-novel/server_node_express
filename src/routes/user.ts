@@ -1,6 +1,7 @@
 import { Request, Response } from 'express'
 import User from '../entity/User.entity'
 import userService from '../service/user.service'
+import AdminResponse from './AdminResponse'
 
 export default {
 
@@ -8,7 +9,7 @@ export default {
         const { userId, nickname, avatarUrl, address, gender } = req.body
 
         if (!userId) {
-            return res.json({ code: '9999', message: '用户ID(userId)不能为空', data: {} })
+            return res.json(AdminResponse.failure('用户ID(userId)不能为空'))
         }
 
         const params = new User()
@@ -20,10 +21,10 @@ export default {
 
         try {
             const user = await userService.updateUser(params)
-            res.json({ code: '0000', message: '操作成功', data: user })
+            res.json(AdminResponse.success(user))
         } catch (e) {
             console.log('[-] routes > user > updateUser()', e.message)
-            res.json({ code: '9999', message: '修改用户信息失败', data: {} })
+            res.json(AdminResponse.failure('修改用户信息失败'))
         }
     },
 

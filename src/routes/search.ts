@@ -1,9 +1,10 @@
 import { Request, Response } from 'express'
-import novelDao from '../daos/novel'
 
 import Search from '../entity/Search.entity'
 import User from '../entity/User.entity'
 import searchService from '../service/search.service'
+import novelService from '../service/novel.service'
+import AdminResponse from './AdminResponse'
 
 export default {
     /**
@@ -13,15 +14,15 @@ export default {
         const { userId } = req.query
 
         if (!userId) {
-            return res.json({ code: '0000', message: '用户ID(userId)不能为空', data: [] })
+            return res.json(AdminResponse.failure('用户ID(userId)不能为空'))
         }
 
         try {
             const hists = await searchService.findHistsByUserId(userId)
-            res.json({ code: '0000', message: '操作成功', data: hists })
+            res.json(AdminResponse.success(hists))
         } catch (e) {
             console.log('[-] routes > search > getSearchHist()', e.message)
-            res.json({ code: '9999', message: '查询搜索历史记录失败', data: [] })
+            res.json(AdminResponse.failure('查询搜索历史记录失败'))
         }
     },
 
@@ -31,10 +32,10 @@ export default {
     getSearchHot: async function (req: Request, res: Response) {
         try {
             const hots = await searchService.findHots()
-            res.json({ code: '0000', message: '操作成功', data: hots })
+            res.json(AdminResponse.success('查询搜索历史记录失败'))
         } catch (e) {
             console.log('[-] routes > search > getSearchHot()', e.message)
-            res.json({ code: '9999', message: '查询搜索热门记录失败', data: [] })
+            res.json(AdminResponse.failure('查询搜索热门记录失败'))
         }
     },
 
@@ -46,24 +47,24 @@ export default {
         const { keyword, userId } = req.query
 
         if (!keyword) {
-            return res.json({ code: '9999', message: '关键字(keyword)不能为空', data: [] })
+            return res.json(AdminResponse.failure('关键字(keyword)不能为空'))
         }
 
         if (!userId) {
-            return res.json({ code: '9999', message: '用户ID(userId)不能为空', data: [] })
+            return res.json(AdminResponse.failure('用户ID(userId)不能为空'))
         }
 
-        let reptileResult
+        let novels
         try {
-            reptileResult = await novelDao.reptileNovelList({ keyword })
-            res.json(reptileResult)
+            novels = await novelService.findNovelsByKeyword(keyword)
+            res.json(AdminResponse.success(novels))
         } catch (e) {
             console.log('[-] routes > search > getSearchNovel()', e.message)
-            res.json({ code: '9999', message: '没有找到小说', data: [] })
+            res.json(AdminResponse.failure('没有找到小说'))
         }
 
         try {
-            if (reptileResult && Array.isArray(reptileResult?.data) && reptileResult.data.length > 0) {
+            if (novels && Array.isArray(novels) && novels.length > 0) {
                 // 根据 userId 和 keyword 去搜索表中查数据
                 const hist = await searchService.findHotByUserIdAndKeyword(userId, keyword)
                 if (hist) {

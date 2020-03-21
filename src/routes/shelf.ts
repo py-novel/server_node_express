@@ -3,6 +3,7 @@ import { Request, Response } from 'express'
 import Shelf from '../entity/Shelf.entity'
 import User from '../entity/User.entity'
 import shelfService from '../service/shelf.service'
+import AdminResponse from './AdminResponse'
 
 export default {
 
@@ -15,19 +16,19 @@ export default {
             bookDesc, bookCoverUrl, recentChapterUrl } = req.body
 
         if (!userId) {
-            return res.json({ code: '9999', message: '书架书籍ID(id)不能为空', data: {} })
+            return res.json(AdminResponse.failure('书架书籍ID(id)不能为空'))
         }
 
         if (!authorName) {
-            return res.json({ code: '9999', message: '作者名(authorName)不能为空', data: {} })
+            return res.json(AdminResponse.failure('作者名(authorName)不能为空'))
         }
 
         if (!bookName) {
-            return res.json({ code: '9999', message: '书名(bookName)不能为空', data: {} })
+            return res.json(AdminResponse.failure('书名(bookName)不能为空'))
         }
 
         if (!recentChapterUrl) {
-            return res.json({ code: '9999', message: '最新阅读章节(recentChapterUrl)不能为空', data: {} })
+            return res.json(AdminResponse.failure('最新阅读章节(recentChapterUrl)不能为空'))
         }
 
         try {
@@ -35,7 +36,7 @@ export default {
             const count = await shelfService.findCountByUserIdAndAuthornameAndBookname(userId, authorName, bookName)
 
             if (count > 0) {
-                return res.json({ code: '9999', message: '该书籍已在书架中，不可重复添加', data: {} })
+                return res.json(AdminResponse.failure('该书籍已在书架中，不可重复添加'))
             }
 
             // 新增书架书籍
@@ -47,10 +48,10 @@ export default {
             shelf.recentChapterUrl = recentChapterUrl
             shelf.user = new User(userId)
             await shelfService.saveShelf(shelf)
-            res.json({ code: '0000', message: '新增书架书籍成功', data: {} })
+            res.json(AdminResponse.success('新增书架书籍成功'))
         } catch (e) {
             console.log('[-] routes > shelf > addShelf()', e.message)
-            res.json({ code: '9999', message: '新增书架书籍失败', data: {} })
+            res.json(AdminResponse.failure('新增书架书籍失败'))
         }
     },
 
@@ -62,20 +63,20 @@ export default {
         const { id } = req.body
 
         if (!id) {
-            return res.json({ code: '9999', message: '书架书籍ID(id)不能为空', data: {} })
+            return res.json(AdminResponse.failure('书架书籍ID(id)不能为空'))
         }
 
         try {
             const shelf = await shelfService.findOneById(id)
             if (shelf) {
                 await shelfService.removeShelf(shelf)
-                res.json({ code: '0000', message: '删除书架书籍信息成功', data: {} })
+                res.json(AdminResponse.success('删除书架书籍信息成功'))
             } else {
-                res.json({ code: '9999', message: '删除书架书籍信息失败', data: {} })
+                res.json(AdminResponse.failure('删除书架书籍信息失败'))
             }
         } catch (e) {
             console.log('[-] routes > shelf > removeShelf()', e.message)
-            res.json({ code: '9999', message: '删除书架书籍信息失败', data: {} })
+            res.json(AdminResponse.failure('删除书架书籍信息失败'))
         }
     },
 
@@ -87,7 +88,7 @@ export default {
         const { recentChapterUrl } = req.body
 
         if (!recentChapterUrl) {
-            return res.json({ code: '9999', message: '最新阅读章节地址(recentChapterUrl)不能为空', data: {} })
+            return res.json(AdminResponse.failure('最新阅读章节地址(recentChapterUrl)不能为空'))
         }
 
         try {
@@ -96,13 +97,13 @@ export default {
             if (shelf) {
                 shelf.recentChapterUrl = recentChapterUrl
                 await shelfService.saveShelf(shelf)
-                res.json({ code: '0000', message: '更新书架书籍信息成功', data: {} })
+                res.json(AdminResponse.success('更新书架书籍信息成功'))
             } else {
-                res.json({ code: '9999', message: '更新书架书籍信息失败', data: {} })
+                res.json(AdminResponse.failure('更新书架书籍信息失败'))
             }
         } catch (e) {
             console.log('[-] routes > shelf > editShelf()', e.message)
-            res.json({ code: '9999', message: '更新书架书籍信息失败', data: {} })
+            res.json(AdminResponse.failure('更新书架书籍信息失败'))
         }
     },
 
@@ -115,15 +116,15 @@ export default {
         const { userId = '' } = req.query
 
         if (!userId) {
-            return res.json({ code: '9999', message: '用户ID(userId)不能为空', data: [] })
+            return res.json(AdminResponse.failure('用户ID(userId)不能为空'))
         }
 
         try {
             const shelfs = await shelfService.findAllByUserId(userId)
-            res.json({ code: '0000', message: '操作成功', data: shelfs })
+            res.json(AdminResponse.success(shelfs))
         } catch (e) {
             console.log('[-] routes > shelf > getShelf()', e.message)
-            res.json({ code: '9999', message: '获取书架列表失败', data: [] })
+            res.json(AdminResponse.failure('获取书架列表失败'))
         }
     },
 }

@@ -4,6 +4,7 @@ import axios from 'axios'
 import { wxAppId, wxAppSecret, tokenExpiresIn } from '../config'
 import User from '../entity/User.entity'
 import userService from '../service/user.service'
+import AdminResponse from './AdminResponse'
 
 export default {
     /**
@@ -13,7 +14,7 @@ export default {
         const { code } = req.body
 
         if (!code) {
-            return res.json({ code: '9999', message: '登录码(code)不能为空', data: {} })
+            return res.json(AdminResponse.failure('登录码(code)不能为空'))
         }
 
         try {
@@ -32,32 +33,24 @@ export default {
                 newUser.username = openid
                 newUser.password = openid
                 newUser = await userService.saveUser(newUser)
-                res.json({
-                    code: '0000',
-                    message: '获取用户信息成功',
-                    data: {
-                        userId: newUser.id,
-                        openId: openid,
-                        token,
-                    },
-                })
+                res.json(AdminResponse.success({
+                    userId: newUser.id,
+                    openId: openid,
+                    token,
+                }, '获取用户信息成功'))
             } else {
                 const { id, nickname, avatarUrl } = user
-                res.json({
-                    code: '0000',
-                    message: '获取用户信息成功',
-                    data: {
-                        userId: id,
-                        openId: openid,
-                        nickname,
-                        avatarUrl,
-                        token,
-                    },
-                })
+                res.json(AdminResponse.success({
+                    userId: id,
+                    openId: openid,
+                    nickname,
+                    avatarUrl,
+                    token,
+                }, '获取用户信息成功'))
             }
         } catch (e) {
             console.log('[-] routes > weapp > signin()', e.message)
-            res.json({ code: '9999', message: '获取用户信息失败', data: {} })
+            res.json(AdminResponse.failure('获取用户信息失败'))
         }
     },
 }

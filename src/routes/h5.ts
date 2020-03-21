@@ -3,6 +3,7 @@ import jwt from '@apacejs/jwt'
 import { tokenExpiresIn } from '../config'
 import User from '../entity/User.entity'
 import userService from '../service/user.service'
+import AdminResponse from './AdminResponse'
 
 export default {
     /**
@@ -12,7 +13,7 @@ export default {
         const { username } = req.body
 
         if (!username) {
-            return res.json({ code: '9999', message: '用户名(username)不能为空', data: {} })
+            return res.json(AdminResponse.failure('用户名(username)不能为空'))
         }
 
         try {
@@ -33,17 +34,10 @@ export default {
             // 获取 token
             const token = jwt.sign({ username }, { expiresIn: tokenExpiresIn })
 
-            res.json({
-                code: '0000',
-                message: '获取用户信息成功',
-                data: {
-                    userId: user.id,
-                    token,
-                }
-            })
+            res.json(AdminResponse.success({ userid: user.id, token }, '获取用户信息成功'))
         } catch (e) {
             console.log('[-] routes > h5 > signin()', e.message)
-            res.json({ code: '9999', message: '获取用户信息失败', data: {} })
+            res.json(AdminResponse.failure('获取用户信息失败'))
         }
     }
 }
