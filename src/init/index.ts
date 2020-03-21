@@ -1,6 +1,6 @@
 import debug from 'debug'
-import { Connection, Repository } from 'typeorm'
-import getConnection from '../util/db'
+import { createConnection, Connection, Repository } from 'typeorm'
+import { dbConfig } from '../util/db'
 
 import Classify from '../entity/Classify.entity'
 import Shelf from '../entity/Shelf.entity'
@@ -167,7 +167,8 @@ class InitScript {
     }
 }
 
-getConnection()
+
+createConnection(dbConfig)
     .then(conn => {
         const script = new InitScript(conn)
         script.start()
