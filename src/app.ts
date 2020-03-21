@@ -6,10 +6,10 @@ import jwt from '@apacejs/jwt'
 import { whiteList, apiPrefix, serverPort } from './config'
 import router from './router'
 
-import * as errorHandler from './middlewares/errorHandler'
-import ignoreFavicon from './middlewares/ignoreFavicon'
-import logger from './middlewares/logger'
-import trunApiprefix from './middlewares/trunApiprefix'
+import * as errorHandler from './middleware/errorHandler'
+import ignoreFavicon from './middleware/ignoreFavicon'
+import logger from './middleware/logger'
+import trunApiprefix from './middleware/trunApiprefix'
 
 const app = express()
 

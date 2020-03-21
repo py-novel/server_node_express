@@ -1,7 +1,7 @@
 import nodemailer from 'nodemailer'
 import Mail from 'nodemailer/lib/mailer'
 import { emailAccount, emailPass } from '../config'
-import redis from '../utils/redis'
+import redis from '../util/redis'
 
 export default {
     /**

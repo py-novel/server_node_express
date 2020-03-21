@@ -1,6 +1,6 @@
 import debug from 'debug'
 import { Connection, Repository } from 'typeorm'
-import getConnection from '../utils/db'
+import getConnection from '../util/db'
 
 import Classify from '../entity/Classify.entity'
 import Shelf from '../entity/Shelf.entity'

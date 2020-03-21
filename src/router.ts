@@ -1,20 +1,14 @@
 import { Application } from 'express'
-import shelf from './routes/shelf'
-import search from './routes/search'
-import novel from './routes/novel'
-import user from './routes/user'
-import oauth from './routes/oauth'
-import weapp from './routes/weapp'
-import h5 from './routes/h5'
-
-import Biquge5200 from './reptile/Biquge5200.reptile'
+import shelf from './route/shelf'
+import search from './route/search'
+import novel from './route/novel'
+import user from './route/user'
+import oauth from './route/oauth'
+import weapp from './route/weapp'
+import h5 from './route/h5'
 
 export default function (app: Application) {
-    app.get('/test', async (req, res) => {
-        const s = new Biquge5200()
-        const novels = await s.reptileNovelList('七品')
-        res.json(novels)
-    })
+    app.get('/test', (req, res) => res.send('hello world'))
 
     // 书架
     app.post('/gysw/shelf', shelf.addShelf)                            // 往书架中添加一本小说

@@ -4,7 +4,7 @@ import { tokenExpiresIn } from '../config'
 import User from '../entity/User.entity'
 import userService from '../service/user.service'
 import mobileService from '../service/mobile.service'
-import AdminResponse from '../utils/AdminResponse'
+import AdminResponse from '../util/AdminResponse'
 
 export default {
     /**

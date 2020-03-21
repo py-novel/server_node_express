@@ -1,7 +1,7 @@
 import QcloudSms from 'qcloudsms_js'
 import { mobileAppid, mobileAppkey, mobileSignature, mobileTemplateId } from '../config'
-import AdminResponse from '../utils/AdminResponse'
-import redis from '../utils/redis'
+import AdminResponse from '../util/AdminResponse'
+import redis from '../util/redis'
 
 export default {
     /**

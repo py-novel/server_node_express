@@ -1,4 +1,4 @@
-import getConnection from '../utils/db'
+import getConnection from '../util/db'
 import Search from '../entity/Search.entity'
 
 export default {

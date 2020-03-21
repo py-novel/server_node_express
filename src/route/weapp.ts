@@ -4,7 +4,7 @@ import axios from 'axios'
 import { wxAppId, wxAppSecret, tokenExpiresIn } from '../config'
 import User from '../entity/User.entity'
 import userService from '../service/user.service'
-import AdminResponse from '../utils/AdminResponse'
+import AdminResponse from '../util/AdminResponse'
 
 export default {
     /**

@@ -4,7 +4,7 @@ import Search from '../entity/Search.entity'
 import User from '../entity/User.entity'
 import searchService from '../service/search.service'
 import novelService from '../service/novel.service'
-import AdminResponse from '../utils/AdminResponse'
+import AdminResponse from '../util/AdminResponse'
 
 export default {
     /**

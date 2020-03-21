@@ -1,4 +1,4 @@
-import getConnection from '../utils/db'
+import getConnection from '../util/db'
 import Novel from '../entity/Novel.entity'
 import Classify from '../entity/Classify.entity'
 import ReptileFactory from '../reptile/ReptileFactory'

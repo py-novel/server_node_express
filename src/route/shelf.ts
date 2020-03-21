@@ -3,7 +3,7 @@ import { Request, Response } from 'express'
 import Shelf from '../entity/Shelf.entity'
 import User from '../entity/User.entity'
 import shelfService from '../service/shelf.service'
-import AdminResponse from '../utils/AdminResponse'
+import AdminResponse from '../util/AdminResponse'
 
 export default {
 

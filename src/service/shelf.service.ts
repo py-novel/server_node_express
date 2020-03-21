@@ -1,4 +1,4 @@
-import getConnection from '../utils/db'
+import getConnection from '../util/db'
 import Shelf from '../entity/Shelf.entity'
 import User from '../entity/User.entity'
 
