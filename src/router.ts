@@ -1,11 +1,11 @@
 import { Application } from 'express'
-import shelf from './route/shelf'
-import search from './route/search'
-import novel from './route/novel'
-import user from './route/user'
-import oauth from './route/oauth'
-import weapp from './route/weapp'
-import h5 from './route/h5'
+import shelf from './route/shelf.route'
+import search from './route/search.route'
+import novel from './route/novel.route'
+import user from './route/user.route'
+import oauth from './route/oauth.route'
+import weapp from './route/weapp.route'
+import h5 from './route/h5.route'
 
 export default function (app: Application) {
     app.get('/test', (req, res) => res.send('hello world'))
