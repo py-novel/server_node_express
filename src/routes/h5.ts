@@ -3,7 +3,7 @@ import jwt from '@apacejs/jwt'
 import { tokenExpiresIn } from '../config'
 import User from '../entity/User.entity'
 import userService from '../service/user.service'
-import AdminResponse from './AdminResponse'
+import AdminResponse from '../utils/AdminResponse'
 
 export default {
     /**

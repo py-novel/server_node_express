@@ -6,7 +6,7 @@
     "dev": "supervisor node lib/app.js",
     "ts:watch": "tsc -w",
     "ts:build": "tsc",
-    "init": "npm run ts:build && DEBUG=* node lib/init.js",
+    "init": "npm run ts:build && DEBUG=* node lib/init/index.js",
     "lint": "eslint src --fix"
   },
   "keywords": [],

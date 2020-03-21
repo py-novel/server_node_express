@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 import User from '../entity/User.entity'
 import userService from '../service/user.service'
-import AdminResponse from './AdminResponse'
+import AdminResponse from '../utils/AdminResponse'
 
 export default {
 

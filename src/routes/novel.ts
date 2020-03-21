@@ -3,7 +3,7 @@ import { Request, Response } from 'express'
 import shelfService from '../service/shelf.service'
 import classifyService from '../service/classify.service'
 import novelService from '../service/novel.service'
-import AdminResponse from './AdminResponse'
+import AdminResponse from '../utils/AdminResponse'
 
 export default {
     /**
