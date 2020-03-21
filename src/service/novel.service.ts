@@ -20,7 +20,8 @@ export default {
      * @param keyword 
      */
     async findNovelsByKeyword(keyword: string) {
-        // 
+        const novels = await ReptileFactory.getNovelsByKeyword(keyword)
+        return novels
     },
 
     async reptileNovelIntro(targetUrl: string) {
