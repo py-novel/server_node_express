@@ -11,4 +11,4 @@ client.on('connect', function () {
     console.log('redis connected....')
 })
 
-global.redis = client
+export default client
