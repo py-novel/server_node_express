@@ -1,7 +1,10 @@
+import debug from 'debug'
 import nodemailer from 'nodemailer'
 import Mail from 'nodemailer/lib/mailer'
 import { emailAccount, emailPass } from '../config'
-import redis from '../util/redis'
+import * as redis from '../util/redis'
+
+const log = debug('src/service/email')
 
 export default {
     /**
@@ -22,7 +25,7 @@ export default {
 
         const result = await this.sendEmail(mailOption)
         // 保存/更新邮箱校验码
-        await redis.hmsetAsync(`user${userId}`, { email: code })
+        await redis.setAsync(`email${userId}`, code)
         return result
     },
 
@@ -32,7 +35,7 @@ export default {
     validateEcode: async function ({ code, userId }: { code: string; userId: number }) {
         try {
             // 从 redis 中读取邮箱验证码
-            const emailCode = await redis.hgetAsync(`user${userId}`, 'email')
+            const emailCode = await redis.getAsync(`email${userId}`)
             if (!emailCode) return { code: '9999', message: '邮箱校验超时，请重新发送验证码', data: {} }
 
             if (emailCode !== code) {
@@ -40,10 +43,10 @@ export default {
             }
 
             // 校验成功之后要置空校验码值
-            await redis.hmsetAsync(`user${userId}`, { email: '' })
+            await redis.setAsync(`email${userId}`, '')
             return { code: '0000', message: '邮箱校验码验证成功', data: {} }
         } catch (e) {
-            console.log('[-] daos > email > validateEcode()', e.message)
+            log(`validateEcode() redis读取数据失败: ${e.message}`)
             return { code: '9999', message: 'redis 读取数据失败', data: {} }
         }
 
@@ -81,9 +84,9 @@ export default {
         })
 
         return new Promise(function (resolve, reject) {
-            transporter.sendMail(mailOption, async function (err: Error | null) {
-                if (err) {
-                    console.log('[-] utils > email > sendEmail()', err.message)
+            transporter.sendMail(mailOption, async function (e: Error | null) {
+                if (e) {
+                    log(`sendEmail() 发送邮件失败: ${e.message}`)
                     reject({ code: '9999', message: '发送邮件失败', data: {} })
                 }
 

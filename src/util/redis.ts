@@ -1,14 +1,14 @@
-const redis = require('redis')
-const bluebird = require('bluebird')
+import redis from 'redis'
+import { promisify } from 'util'
+import debug from 'debug'
 
-// 将 redis 方法变成 Promise 方法
-bluebird.promisifyAll(redis.RedisClient.prototype)
-bluebird.promisifyAll(redis.Multi.prototype)
-
+const log = debug('src/util/redis')
 const client = redis.createClient()
-
 client.on('connect', function () {
-    console.log('redis connected....')
+    log('redis connected....')
 })
+
+export const getAsync = promisify(client.get).bind(client)
+export const setAsync = promisify(client.set).bind(client)
 
 export default client

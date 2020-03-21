@@ -1,7 +1,10 @@
+import debug from 'debug'
 import QcloudSms from 'qcloudsms_js'
 import { mobileAppid, mobileAppkey, mobileSignature, mobileTemplateId } from '../config'
 import AdminResponse from '../util/AdminResponse'
-import redis from '../util/redis'
+import * as redis from '../util/redis'
+
+const log = debug('src/service/mobile')
 
 export default {
     /**
@@ -15,15 +18,15 @@ export default {
             const result = await this.sendMobileSms(mobile, [code, deadline])
 
             if (result.code !== '0000') {
-                console.log('[-] daos sendVcode()', result)
+                log(`sendVcode() 发送短信验证码失败: ${result}`)
                 return AdminResponse.failure('发送短信验证码失败')
             }
 
-            console.log('短信验证码：', code)
-            await redis.hmsetAsync(`user${mobile}`, { mobile: code })
+            log(`sendVcode() 短信验证码: ${code}`)
+            await redis.setAsync(`moile${mobile}`, code)
             return AdminResponse.success('已发送短信验证码')
         } catch (e) {
-            console.log('[-] daos > mobile > sendVcode()', e.message)
+            log(`sendVcode() 发送短信验证码失败: ${e.message}`)
             return AdminResponse.failure('发送短信验证码失败')
         }
     },
@@ -34,7 +37,7 @@ export default {
     validateVcode: async function ({ vcode, mobile }: { vcode: string, mobile: string }) {
         try {
             // 从 redis 中读取短信验证码
-            const mobileCode = await redis.hgetAsync(`user${mobile}`, 'mobile')
+            const mobileCode = await redis.getAsync(`mobile${mobile}`)
             if (!mobileCode) return AdminResponse.failure('短信校验超时，请重新发送验证码')
 
             if (mobileCode !== vcode) {
@@ -42,10 +45,10 @@ export default {
             }
 
             // 校验成功之后要置空校验码值
-            await redis.hmsetAsync(`user${mobile}`, { mobile: '' })
+            await redis.setAsync(`mobile${mobile}`, '')
             return AdminResponse.success('短信校验码验证成功')
         } catch (e) {
-            console.log('[-] daos > mobile > validateVcode()', e.message)
+            log(`validateVcode() 短信校验验证码失败: ${e.message}`)
             return AdminResponse.failure('短信校验码验证失败')
         }
     },
