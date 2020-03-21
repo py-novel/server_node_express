@@ -1,4 +1,4 @@
-import getConnection from '../util/db'
+import { getManager } from 'typeorm'
 import Search from '../entity/Search.entity'
 
 export default {
@@ -47,7 +47,6 @@ export default {
     },
 
     async getSearchRepository() {
-        const conn = await getConnection()
-        return conn.getRepository(Search)
+        return getManager().getRepository(Search)
     }
 }

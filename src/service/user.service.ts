@@ -1,4 +1,4 @@
-import getConnection from '../util/db'
+import { getManager } from 'typeorm'
 import User from '../entity/User.entity'
 
 export default {
@@ -50,8 +50,7 @@ export default {
     },
 
     async getUserRepository() {
-        const conn = await getConnection()
-        return conn.getRepository(User)
+        return getManager().getRepository(User)
     }
 }
 

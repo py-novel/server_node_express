@@ -1,10 +1,13 @@
 import 'reflect-metadata'
 import { createConnection } from 'typeorm'
+import debug from 'debug'
 import path from 'path'
 import { dbHost, dbUser, dbPassword, dbDatabase } from '../config'
 
-export default function getConnection() {
-    return createConnection({
+const log = debug('src/util/db')
+
+export default function createConnectionPoor(cb: () => void) {
+    createConnection({
         type: 'mysql',
         host: dbHost,
         port: 3306,
@@ -17,4 +20,6 @@ export default function getConnection() {
         synchronize: true,
         logging: false
     })
+        .then(cb)
+        .catch(e => log(`TypeORM connection error: ${e.message}`))
 }

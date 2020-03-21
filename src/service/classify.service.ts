@@ -1,4 +1,4 @@
-import getConnection from '../util/db'
+import { getManager } from 'typeorm'
 import Classify from '../entity/Classify.entity'
 
 export default {
@@ -10,7 +10,6 @@ export default {
     },
 
     async getClassifyRepository() {
-        const conn = await getConnection()
-        return conn.getRepository(Classify)
+        return getManager().getRepository(Classify)
     }
 }

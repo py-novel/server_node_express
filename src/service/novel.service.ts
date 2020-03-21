@@ -1,4 +1,4 @@
-import getConnection from '../util/db'
+import { getManager } from 'typeorm'
 import Novel from '../entity/Novel.entity'
 import Classify from '../entity/Classify.entity'
 import ReptileFactory from '../reptile/ReptileFactory'
@@ -40,8 +40,7 @@ export default {
     },
 
     async getNovelRepository() {
-        const conn = await getConnection()
-        return conn.getRepository(Novel)
+        return getManager().getRepository(Novel)
     },
 
 }

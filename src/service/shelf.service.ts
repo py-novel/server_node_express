@@ -1,4 +1,4 @@
-import getConnection from '../util/db'
+import { getManager } from 'typeorm'
 import Shelf from '../entity/Shelf.entity'
 import User from '../entity/User.entity'
 
@@ -33,7 +33,6 @@ export default {
     },
 
     async getShelfRepository() {
-        const conn = await getConnection()
-        return conn.getRepository(Shelf)
+        return getManager().getRepository(Shelf)
     }
 }
