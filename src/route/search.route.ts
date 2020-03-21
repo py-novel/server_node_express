@@ -1,10 +1,12 @@
 import { Request, Response } from 'express'
-
+import debug from 'debug'
 import Search from '../entity/Search.entity'
 import User from '../entity/User.entity'
 import searchService from '../service/search.service'
 import novelService from '../service/novel.service'
 import AdminResponse from '../util/AdminResponse'
+
+const log = debug('src/route/search')
 
 export default {
     /**
@@ -12,6 +14,7 @@ export default {
      */
     getSearchHist: async function (req: Request, res: Response) {
         const { userId } = req.query
+        log(`getSearchHist() param of userId: ${userId}`)
 
         if (!userId) {
             return res.json(AdminResponse.failure('用户ID(userId)不能为空'))
@@ -21,8 +24,8 @@ export default {
             const hists = await searchService.findHistsByUserId(userId)
             res.json(AdminResponse.success(hists))
         } catch (e) {
-            console.log('[-] routes > search > getSearchHist()', e.message)
-            res.json(AdminResponse.failure('查询搜索历史记录失败'))
+            log(`getSearchHist() 查询搜索历史失败: ${e.message}`)
+            res.json(AdminResponse.failure('查询搜索历史失败'))
         }
     },
 
@@ -32,9 +35,9 @@ export default {
     getSearchHot: async function (req: Request, res: Response) {
         try {
             const hots = await searchService.findHots()
-            res.json(AdminResponse.success('查询搜索历史记录失败'))
+            res.json(AdminResponse.success(hots))
         } catch (e) {
-            console.log('[-] routes > search > getSearchHot()', e.message)
+            log(`getSearchHot() 查询搜索热门记录失败: ${e.message}`)
             res.json(AdminResponse.failure('查询搜索热门记录失败'))
         }
     },
@@ -45,6 +48,7 @@ export default {
      */
     getSearchNovel: async function (req: Request, res: Response) {
         const { keyword, userId } = req.query
+        log(`getSearchNovel() param of keyword: ${keyword} userId: ${userId}`)
 
         if (!keyword) {
             return res.json(AdminResponse.failure('关键字(keyword)不能为空'))
@@ -59,7 +63,7 @@ export default {
             novels = await novelService.findNovelsByKeyword(keyword)
             res.json(AdminResponse.success(novels))
         } catch (e) {
-            console.log('[-] routes > search > getSearchNovel()', e.message)
+            log(`getSearchNovel() 查找小说列表失败: ${e.message}`)
             res.json(AdminResponse.failure('没有找到小说'))
         }
 
@@ -73,7 +77,6 @@ export default {
                     hist.times = times
                     hist.lastUpdateAt = new Date()
                     await searchService.saveSearch(hist)
-                    console.log('更新搜索历史记录成功 userId=%o, keyword=%o', userId, keyword)
                 } else {
                     // 未搜过关键词，新增
                     const newSearch = new Search()
@@ -81,11 +84,10 @@ export default {
                     newSearch.keyword = keyword
                     newSearch.lastUpdateAt = new Date()
                     await searchService.saveSearch(newSearch)
-                    console.log('新增搜索历史记录成功 userId=%o, keyword=%o', userId, keyword)
                 }
             }
         } catch (e) {
-            console.log('[-] routes > search > getSearchNovel()', e.message)
+            log(`getSearchNovel() 编辑关键词失败: ${e.message}`)
         }
     },
 }

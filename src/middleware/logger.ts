@@ -5,10 +5,12 @@
  * 【请求时间】【请求方法】【请求地址】
  * 【请求参数】
  */
-
 import { Request, Response, NextFunction } from 'express'
+import debug from 'debug'
 
-function print(m: string) { console.log(m); return print; }
+const log = debug('src/middleware/logger')
+
+function print(m: string) { log(m); return print; }
 
 export default function () {
     return (req: Request, res: Response, next: NextFunction) => {

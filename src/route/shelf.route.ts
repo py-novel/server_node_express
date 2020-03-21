@@ -1,9 +1,11 @@
 import { Request, Response } from 'express'
-
+import debug from 'debug'
 import Shelf from '../entity/Shelf.entity'
 import User from '../entity/User.entity'
 import shelfService from '../service/shelf.service'
 import AdminResponse from '../util/AdminResponse'
+
+const log = debug('src/route/shelf')
 
 export default {
 
@@ -14,6 +16,8 @@ export default {
     addShelf: async function (req: Request, res: Response) {
         const { userId, authorName, bookName,
             bookDesc, bookCoverUrl, recentChapterUrl } = req.body
+        log(`addShelf() param of userId: ${userId} authorName: ${authorName} bookName: ${bookName}
+        bookDesc: ${bookDesc} bookCoverUrl: ${bookCoverUrl} recentChapterUrl: ${recentChapterUrl}`)
 
         if (!userId) {
             return res.json(AdminResponse.failure('书架书籍ID(id)不能为空'))
@@ -50,7 +54,7 @@ export default {
             await shelfService.saveShelf(shelf)
             res.json(AdminResponse.success('新增书架书籍成功'))
         } catch (e) {
-            console.log('[-] routes > shelf > addShelf()', e.message)
+            log(`addShelf() 新增书架书籍失败: ${e.message}`)
             res.json(AdminResponse.failure('新增书架书籍失败'))
         }
     },
@@ -61,6 +65,7 @@ export default {
      */
     removeShelf: async function (req: Request, res: Response) {
         const { id } = req.body
+        log(`removeShelf() param of id: ${id}`)
 
         if (!id) {
             return res.json(AdminResponse.failure('书架书籍ID(id)不能为空'))
@@ -75,7 +80,7 @@ export default {
                 res.json(AdminResponse.failure('删除书架书籍信息失败'))
             }
         } catch (e) {
-            console.log('[-] routes > shelf > removeShelf()', e.message)
+            log(`removeShelf() 删除书架书籍信息失败: ${e.message}`)
             res.json(AdminResponse.failure('删除书架书籍信息失败'))
         }
     },
@@ -86,6 +91,7 @@ export default {
     editShelf: async function (req: Request, res: Response) {
         const { id } = req.params
         const { recentChapterUrl } = req.body
+        log(`editShelf() param of id: ${id} recentChapterUrl: ${recentChapterUrl}`)
 
         if (!recentChapterUrl) {
             return res.json(AdminResponse.failure('最新阅读章节地址(recentChapterUrl)不能为空'))
@@ -93,7 +99,6 @@ export default {
 
         try {
             const shelf = await shelfService.findOneById(id)
-
             if (shelf) {
                 shelf.recentChapterUrl = recentChapterUrl
                 await shelfService.saveShelf(shelf)
@@ -102,7 +107,7 @@ export default {
                 res.json(AdminResponse.failure('更新书架书籍信息失败'))
             }
         } catch (e) {
-            console.log('[-] routes > shelf > editShelf()', e.message)
+            log(`editShelf() 更新书架书籍信息失败: ${e.message}`)
             res.json(AdminResponse.failure('更新书架书籍信息失败'))
         }
     },
@@ -114,6 +119,7 @@ export default {
      */
     getShelfList: async function (req: Request, res: Response) {
         const { userId = '' } = req.query
+        log(`getShelfList() param of userId: ${userId}`)
 
         if (!userId) {
             return res.json(AdminResponse.failure('用户ID(userId)不能为空'))
@@ -123,7 +129,7 @@ export default {
             const shelfs = await shelfService.findAllByUserId(userId)
             res.json(AdminResponse.success(shelfs))
         } catch (e) {
-            console.log('[-] routes > shelf > getShelf()', e.message)
+            log(`getShelfList() 获取书架书籍列表失败: ${e.message}`)
             res.json(AdminResponse.failure('获取书架列表失败'))
         }
     },

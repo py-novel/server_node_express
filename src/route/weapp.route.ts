@@ -1,4 +1,5 @@
 import { Request, Response } from 'express'
+import debug from 'debug'
 import jwt from '@apacejs/jwt'
 import axios from 'axios'
 import { wxAppId, wxAppSecret, tokenExpiresIn } from '../config'
@@ -6,12 +7,15 @@ import User from '../entity/User.entity'
 import userService from '../service/user.service'
 import AdminResponse from '../util/AdminResponse'
 
+const log = debug('src/route/weapp')
+
 export default {
     /**
      * 微信小程序登录接口
      */
     signin: async function (req: Request, res: Response) {
         const { code } = req.body
+        log(`signin() param of code: ${code}`)
 
         if (!code) {
             return res.json(AdminResponse.failure('登录码(code)不能为空'))
@@ -26,6 +30,8 @@ export default {
             // 查询用户信息
             const user = await userService.findOneByUsername(openid)
             const token = jwt.sign({ username: openid }, { expiresIn: tokenExpiresIn })
+            log(`signin() token: ${token}`)
+
             // 用户不存在，则新增用户
             if (!user) {
                 let newUser = new User()
@@ -49,7 +55,7 @@ export default {
                 }, '获取用户信息成功'))
             }
         } catch (e) {
-            console.log('[-] routes > weapp > signin()', e.message)
+            log(`signin() 获取用户信息失败: ${e.message}`)
             res.json(AdminResponse.failure('获取用户信息失败'))
         }
     },

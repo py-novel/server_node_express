@@ -15,7 +15,6 @@
   "dependencies": {
     "@apacejs/jwt": "^1.0.0-beta.8",
     "axios": "^0.19.0",
-    "bluebird": "^3.5.3",
     "body-parser": "^1.18.3",
     "chalk": "^2.4.1",
     "cheerio": "^1.0.0-rc.3",
@@ -31,13 +30,14 @@
     "mysql": "^2.16.0",
     "nodemailer": "^4.7.0",
     "qcloudsms_js": "^0.1.1",
-    "redis": "^2.8.0",
+    "redis": "^3.0.2",
     "reflect-metadata": "^0.1.13",
     "supervisor": "^0.12.0",
     "typeorm": "^0.2.24",
     "uuid": "^3.3.2"
   },
   "devDependencies": {
+    "@types/bluebird": "^3.5.30",
     "@types/body-parser": "^1.19.0",
     "@types/cheerio": "^0.22.16",
     "@types/debug": "^4.1.5",
@@ -46,6 +46,7 @@
     "@types/mysql": "^2.15.9",
     "@types/nodemailer": "^6.4.0",
     "@types/qs": "^6.9.1",
+    "@types/redis": "^2.8.16",
     "@types/uuid": "^7.0.0",
     "eslint": "^6.6.0",
     "morgan": "^1.9.1",

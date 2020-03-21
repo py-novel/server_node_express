@@ -1,4 +1,5 @@
 import { Request, Response } from 'express'
+import debug from 'debug'
 import jwt from '@apacejs/jwt'
 import { tokenExpiresIn } from '../config'
 import User from '../entity/User.entity'
@@ -6,12 +7,15 @@ import userService from '../service/user.service'
 import mobileService from '../service/mobile.service'
 import AdminResponse from '../util/AdminResponse'
 
+const log = debug('src/route/oauth')
+
 export default {
     /**
      * 拿token
      */
     getToken: async function (req: Request, res: Response) {
         const { userId } = req.query
+        log(`getToken() param of userId: ${userId}`)
 
         if (!userId) {
             return res.json(AdminResponse.failure('用户名ID(userId)不能为空'))
@@ -19,7 +23,6 @@ export default {
 
         try {
             const user = await userService.findOneById(userId)
-
             if (user) {
                 const username = user.username
                 const token = jwt.sign({ username }, { expiresIn: tokenExpiresIn })
@@ -28,7 +31,7 @@ export default {
                 res.json(AdminResponse.failure('获取token失败'))
             }
         } catch (e) {
-            console.log('[-] routes getToken()', e.message)
+            log(`getToken() 获取token失败: ${e.message}`)
             res.json(AdminResponse.failure('获取token失败'))
         }
     },
@@ -38,6 +41,7 @@ export default {
      */
     signin: async function (req: Request, res: Response) {
         const { username, password } = req.body
+        log(`signin() param of username: ${username} password: ${password}`)
 
         // 校验参数必填
         if (!username || !password) {
@@ -47,7 +51,6 @@ export default {
         try {
             // 根据手机号和密码查询用户信息
             const user = await userService.findOneByUsernameAndPassword(username, password)
-
             if (user) {
                 // jwt 生成 token 返回给用户
                 const token = jwt.sign({ username }, { expiresIn: tokenExpiresIn })
@@ -59,10 +62,9 @@ export default {
                     token,
                 }, '登录成功'))
             }
-
             res.json(AdminResponse.failure('用户名或密码错误'))
         } catch (e) {
-            console.log('[-] routes signin()', e.message)
+            log(`signin() 登录失败: ${e.message}`)
             res.json(AdminResponse.failure('登录失败'))
         }
     },
@@ -72,6 +74,7 @@ export default {
      */
     signup: async function (req: Request, res: Response) {
         const { username, password, vcode } = req.body
+        log(`signup() param of username: ${username} password: ${password} vcode: ${vcode}`)
 
         // 校验参数是否必填以及格式是否正确
         if (!username) {
@@ -110,7 +113,7 @@ export default {
             newUser = await userService.saveUser(newUser)
             res.json(AdminResponse.success({ userId: newUser.id }, '注册成功'))
         } catch (e) {
-            console.log('[-] routes signup()', e.message)
+            log(`signup() 注册失败: ${e.message}`)
             res.json(AdminResponse.failure('注册失败'))
         }
     },
@@ -120,6 +123,7 @@ export default {
      */
     resetpw: async function (req: Request, res: Response) {
         const { username, password, vcode } = req.body
+        log(`resetpw() param of username: ${username} password: ${password} vcode: ${vcode}`)
 
         // 校验参数是否必填以及格式是否正确
         if (!username) {
@@ -156,7 +160,7 @@ export default {
             await userService.saveUser(user)
             res.json(AdminResponse.success('重置密码成功'))
         } catch (e) {
-            console.log('[-] routes resetpw()', e.message)
+            log(`resetpw() 重置密码失败: ${e.message}`)
             res.json(AdminResponse.failure('重置密码失败'))
         }
     },
@@ -167,6 +171,7 @@ export default {
      */
     sendVcode: async function (req: Request, res: Response) {
         const { username, type } = req.body
+        log(`sendVcode() param of username: ${username} type: ${type}`)
 
         // 校验参数必填
         if (!username) {
@@ -197,7 +202,7 @@ export default {
             const vcodeResult = await mobileService.sendVcode({ mobile: username })
             res.json(vcodeResult)
         } catch (e) {
-            console.log('[-] routes sendVcode()', e.message)
+            log(`sendVcode() 发送验证码失败: ${e.message}`)
             res.json(AdminResponse.failure('发送验证码失败'))
         }
     },

@@ -88,8 +88,6 @@ export default class YixuanjuReptile implements BaseReptile {
         novelContent.prevUrl = this.formatUrl(targetUrl, $('div#chatool a').eq(1).attr('href') || '')        // 上一章节 url
         novelContent.nextUrl = this.formatUrl(targetUrl, $('div#chatool a').eq(2).attr('href') || '')        // 下一章节 url
 
-        console.log('novelContent', novelContent)
-
         if (!novelContent.title || !novelContent.content) {
             return null
         }
