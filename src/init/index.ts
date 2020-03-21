@@ -1,12 +1,12 @@
 import debug from 'debug'
 import { Connection, Repository } from 'typeorm'
-import getConnection from './utils/db'
+import getConnection from '../utils/db'
 
-import Classify from './entity/Classify.entity'
-import Shelf from './entity/Shelf.entity'
-import Novel from './entity/Novel.entity'
-import User from './entity/User.entity'
-import Search from './entity/Search.entity'
+import Classify from '../entity/Classify.entity'
+import Shelf from '../entity/Shelf.entity'
+import Novel from '../entity/Novel.entity'
+import User from '../entity/User.entity'
+import Search from '../entity/Search.entity'
 
 const classifyLog = debug('classify')
 const novelLog = debug('novel')
@@ -14,6 +14,11 @@ const shelfLog = debug('shelf')
 const searchLog = debug('search')
 const userLog = debug('user')
 
+/**
+ * 初始化操作：
+ * - 自动创建/同步数据库表；
+ * - 自动初始化表示例数据。
+ */
 class InitScript {
     classifyRepository: Repository<Classify>;
     novelRepository: Repository<Novel>;
