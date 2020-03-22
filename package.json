@@ -4,8 +4,9 @@
   "description": "",
   "scripts": {
     "dev": "DEBUG=src/* supervisor node lib/app.js",
-    "ts:watch": "tsc -w",
-    "ts:build": "tsc",
+    "ts:watch": "npm run rm:lib && tsc -w",
+    "ts:build": "npm run rm:lib && tsc",
+    "rm:lib": "shx rm -rf lib",
     "init": "npm run ts:build && DEBUG=* node lib/init/index.js",
     "lint": "eslint src --fix"
   },
@@ -49,6 +50,7 @@
     "@types/redis": "^2.8.16",
     "@types/uuid": "^7.0.0",
     "eslint": "^6.6.0",
+    "shx": "^0.3.2",
     "typescript": "^3.8.3"
   }
 }
