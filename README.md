@@ -26,7 +26,13 @@ $ npm run init
 **Dev**
 
 ``` bash
-$ npm run ts:dev
+$ npm run ts:watch
+```
+
+另打开一个终端：
+
+``` bash
+$ npm run dev
 ```
 
 访问 `localhost:4000/api/v3`。
