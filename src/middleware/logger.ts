@@ -17,16 +17,16 @@ export default function () {
         const audit = new Audit()
         audit.method = req.method
         audit.url = req.url
-        audit.datetime = new Date()
+        audit.requestTime = new Date()
         audit.body = JSON.stringify(req.body)
         audit.query = JSON.stringify(req.query)
         audit.params = JSON.stringify(req.params)
-        log(`saveAudit() param of audit: ${JSON.stringify(audit)}`)
+        log(`createAudit() param of audit: ${JSON.stringify(audit)}`)
 
         try {
-            await auditService.saveAudit(audit)
+            await auditService.createAudit(audit)
         } catch (e) {
-            log(`saveAudit() 审计日志保存失败: ${e.message}`)
+            log(`createAudit() 审计日志创建失败: ${e.message}`)
         } finally {
             next()
         }

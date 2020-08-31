@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm'
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm'
 import Classify from './Classify.entity';
 
 @Entity()
@@ -21,10 +21,16 @@ export default class Novel {
     @Column({ name: 'book_url', comment: '小说网络地址，可以查询所有章节' })
     bookUrl: string;
 
-    @Column('date', { name: 'last_update_at', comment: '最后更新时间' })
+    @Column('date', { name: 'last_update_at', comment: '小说最后更新时间，业务字段' })
     lastUpdateAt: Date;
 
-    @ManyToOne(type => Classify, classify => classify.novels, { nullable: false })
+    @CreateDateColumn({ comment: '创建时间', name: 'create_time', select: false })
+    createTime: Date;
+
+    @UpdateDateColumn({ comment: '更新时间', name: 'update_time', select: false })
+    updateTime: Date;
+
+    @ManyToOne(() => Classify, classify => classify.novels, { nullable: false })
     @JoinColumn({ name: 'classify_id' })
     classify: Classify;
 }

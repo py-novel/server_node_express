@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm'
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn } from 'typeorm'
 
 @Entity()
 export default class Audit {
@@ -12,9 +12,6 @@ export default class Audit {
     @Column({ comment: '请求地址' })
     url: string;
 
-    @Column('datetime', { comment: '请求时间' })
-    datetime: Date;
-
     @Column('varchar', { comment: '请求参数 body', default: '{}' })
     body: string;
 
@@ -23,4 +20,7 @@ export default class Audit {
 
     @Column('varchar', { comment: '请求参数 params', default: '{}' })
     params: string;
+
+    @CreateDateColumn({ comment: '请求时间', name: 'request_time' })
+    requestTime: Date;
 }

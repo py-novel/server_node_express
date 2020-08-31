@@ -3,13 +3,10 @@ import Classify from '../entity/Classify.entity'
 
 export default {
 
-    async findAll() {
-        const classifyRepository = await this.getClassifyRepository()
+    async listClassifies() {
+        const classifyRepository = await getManager().getRepository(Classify)
         const classifies = await classifyRepository.find()
         return classifies
     },
 
-    async getClassifyRepository() {
-        return getManager().getRepository(Classify)
-    }
 }

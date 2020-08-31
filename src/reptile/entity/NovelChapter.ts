@@ -1,5 +1,5 @@
 export default class Chapter {
-    uuid: string;
+    id: string;
 
     name: string;
 

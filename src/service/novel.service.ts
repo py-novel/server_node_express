@@ -1,32 +1,46 @@
 import { getManager } from 'typeorm'
+import debug from 'debug'
 import Novel from '../entity/Novel.entity'
 import Classify from '../entity/Classify.entity'
 import ReptileFactory from '../reptile/ReptileFactory'
+import searchService from './search.service'
+
+const log = debug('src/services/novel')
 
 export default {
 
     /**
-     * 根据小说分类 ID 从数据库中查询小说列表数据
-     * @param classifyId 
+     * 查询小说列表
+     * @param classifyId 根据分类查小说列表
+     * @param keyword 根据关键词查小说列表 
      */
-    async findNovelsByClassify(classifyId: string) {
-        const novelRepository = await this.getNovelRepository()
-        const novels = await novelRepository.find({ classify: new Classify(classifyId) })
-        return novels
-    },
+    async listNovels({ classifyId, keyword, userId }: { classifyId?: string; keyword?: string; userId?: string }) {
+        const novelRepository = await getManager().getRepository(Novel)
 
-    /**
-     * 根据查询关键词从各个源网站查询列表数据
-     * @param keyword 
-     */
-    async findNovelsByKeyword(keyword: string) {
-        const novels = await ReptileFactory.getNovelsByKeyword(keyword)
-        return novels
+        if (classifyId) {   // 根据分类从库里查数据
+            const classify = new Classify()
+            classify.id = classifyId
+            return await novelRepository.find({ classify })
+        }
+
+        if (keyword && userId) {    // list novels by keyword
+            const novels = await ReptileFactory.getNovelsByKeyword(keyword)
+
+            try {
+                if (novels && Array.isArray(novels) && novels.length > 0) {
+                    await searchService.modifySearchTimes(userId, keyword)
+                }
+            } catch (e) {
+                log(`listNovels() 更新搜索关键词次数失败: ${e.message}`)
+            }
+
+            return novels
+        }
     },
 
     async reptileNovelIntro(targetUrl: string) {
         const reptile = await ReptileFactory.getReptile(targetUrl)
-        return reptile?.reptileNovelIntro(targetUrl)
+        return reptile.reptileNovelIntro(targetUrl)
     },
 
     async reptileNovelContent(targetUrl: string) {
@@ -37,10 +51,6 @@ export default {
     async reptileNovelChapter(targetUrl: string) {
         const reptile = await ReptileFactory.getReptile(targetUrl)
         return reptile.reptileChapterList(targetUrl)
-    },
-
-    async getNovelRepository() {
-        return getManager().getRepository(Novel)
     },
 
 }

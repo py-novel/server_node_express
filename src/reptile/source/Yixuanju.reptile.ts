@@ -70,7 +70,7 @@ export default class YixuanjuReptile implements BaseReptile {
             const chapter = new NovelChapter()
             chapter.name = $($lis[i]).children('a').text()
             chapter.url = this.formatUrl(targetUrl, $($lis[i]).children('a').attr('href') || '')
-            chapter.uuid = getRandomAlphaNum()
+            chapter.id = getRandomAlphaNum()
             chapters.push(chapter)
         }
 

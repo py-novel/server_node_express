@@ -63,7 +63,7 @@ export default class Biquge5200Reptile implements BaseReptile {
             const chapter = new NovelChapter()
             chapter.name = $($dds[i]).text()
             chapter.url = $($dds[i]).attr('href') || ''
-            chapter.uuid = getRandomAlphaNum()
+            chapter.id = getRandomAlphaNum()
             chapters.push(chapter)
         }
 
