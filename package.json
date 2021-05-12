@@ -29,7 +29,7 @@
     "jsonwebtoken": "^8.4.0",
     "moment": "^2.22.2",
     "mysql": "^2.16.0",
-    "nodemailer": "^4.7.0",
+    "nodemailer": "^6.4.16",
     "qcloudsms_js": "^0.1.1",
     "redis": "^3.0.2",
     "reflect-metadata": "^0.1.13",
