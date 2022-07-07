@@ -27,7 +27,7 @@
     "http-status-codes": "^1.4.0",
     "iconv-lite": "^0.4.24",
     "jsonwebtoken": "^8.4.0",
-    "moment": "^2.22.2",
+    "moment": "^2.29.4",
     "mysql": "^2.16.0",
     "nodemailer": "^4.7.0",
     "qcloudsms_js": "^0.1.1",
